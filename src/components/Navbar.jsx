@@ -1,9 +1,9 @@
-"use client";
 import Link from "next/link";
 
 const Navbar = () => {
-  // TODO: Replace with actual auth state later
-  const user = true;
+  // STATIC STATE: Set to false to see the Login & Register buttons.
+  // We will make this functional later.
+  const isLoggedIn = false;
 
   const navLinks = (
     <>
@@ -17,11 +17,29 @@ const Navbar = () => {
           Explore Cars
         </Link>
       </li>
+      {/* Showing these in the main nav per requirement */}
+      {isLoggedIn && (
+        <>
+          <li>
+            <Link href="/add-car" className="font-medium hover:text-primary">
+              Add Car
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/my-bookings"
+              className="font-medium hover:text-primary"
+            >
+              My Bookings
+            </Link>
+          </li>
+        </>
+      )}
     </>
   );
 
   return (
-    <div className="navbar bg-base-100 shadow-lg px-4 sm:px-8 sticky top-0 z-50">
+    <div className="navbar bg-base-100 shadow-sm px-4 sm:px-8 border-b border-base-200">
       {/* Mobile Menu & Logo */}
       <div className="navbar-start">
         <div className="dropdown">
@@ -46,12 +64,29 @@ const Navbar = () => {
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
             {navLinks}
+            {/* Show Login/Register in mobile menu if not logged in */}
+            {!isLoggedIn && (
+              <>
+                <div className="divider my-1"></div>
+                <li>
+                  <Link href="/login" className="text-primary font-medium">
+                    Login
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/register" className="text-primary font-medium">
+                    Register
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
         <Link
           href="/"
           className="btn btn-ghost text-2xl font-bold text-primary gap-2"
         >
+          {/* Car Icon for Logo */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -75,9 +110,9 @@ const Navbar = () => {
         <ul className="menu menu-horizontal px-1 space-x-2">{navLinks}</ul>
       </div>
 
-      {/* User Profile / Login */}
+      {/* User Profile OR Login/Register */}
       <div className="navbar-end">
-        {user ? (
+        {isLoggedIn ? (
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}
@@ -85,6 +120,7 @@ const Navbar = () => {
               className="btn btn-ghost btn-circle avatar border-2 border-primary hover:border-primary-focus transition-all"
             >
               <div className="w-10 rounded-full">
+                {/* Static placeholder image */}
                 <img
                   alt="User Profile"
                   src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff"
@@ -95,7 +131,7 @@ const Navbar = () => {
               tabIndex={0}
               className="mt-3 z-[1] p-2 shadow-xl menu menu-sm dropdown-content bg-base-100 rounded-box w-52 border border-base-200"
             >
-              <li className="menu-title text-primary">My Account</li>
+              <li className="menu-title text-primary">My Profile</li>
               <li>
                 <Link href="/add-car">Add Car</Link>
               </li>
@@ -112,12 +148,20 @@ const Navbar = () => {
             </ul>
           </div>
         ) : (
-          <Link
-            href="/login"
-            className="btn btn-primary rounded-full px-8 shadow-md"
-          >
-            Login
-          </Link>
+          <div className="hidden lg:flex space-x-3">
+            <Link
+              href="/login"
+              className="btn btn-outline btn-primary rounded-md px-6 hover:text-white"
+            >
+              Login
+            </Link>
+            <Link
+              href="/register"
+              className="btn btn-primary rounded-md px-6 text-white"
+            >
+              Register
+            </Link>
+          </div>
         )}
       </div>
     </div>
