@@ -98,8 +98,8 @@ export default function AvailableCars() {
                       alt={car.carName}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <span className="absolute top-4 right-4 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 shadow-md backdrop-blur-md">
-                      Instant Rent
+                    <span className="absolute top-4 right-4 text-xs font-black uppercase tracking-widest px-3.5 py-1 rounded-full bg-emerald-600 text-white shadow-xl border border-emerald-500 z-20">
+                      Available
                     </span>
                   </div>
 
