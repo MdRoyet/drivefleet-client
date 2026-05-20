@@ -2,7 +2,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
-import ThemeToggle from "@/components/ThemeToggle";
 
 export const metadata = {
   title: "DriveFleet - Car Rental Platform",
@@ -15,7 +14,7 @@ export default function RootLayout({ children }) {
       {/* Changed bg-gray-50 to bg-base-100 text-base-content */}
       <body className="flex flex-col min-h-screen bg-base-100 text-base-content">
         <Toaster position="top-center" reverseOrder={false} />
-        <ThemeToggle></ThemeToggle>
+
         <Navbar />
         {/* Main Content Area */}
         <main className="flex-grow w-full">{children}</main>
