@@ -3,6 +3,7 @@ import Banner from "@/components/Banner";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 
 import SubscriptionPlans from "@/components/sections/SubscriptionPlans";
+import AISearch from "@/components/sections/AISearch";
 
 export default function Home() {
   return (
@@ -23,6 +24,10 @@ export default function Home() {
 
         {/* Live Inventory Operations Component Matrix */}
         <AvailableCars />
+
+        {/* AI Search */}
+
+        <AISearch></AISearch>
 
         {/* Static Feature Breakdown Component */}
         <WhyChooseUs />
