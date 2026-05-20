@@ -6,10 +6,12 @@ module.exports = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      // 🌟 Overrides standard Tailwind sans classes to explicitly prioritize Poppins
+      fontFamily: {
+        sans: ["Poppins"],
+      },
+    },
   },
   plugins: [require("daisyui")],
-  daisyui: {
-    themes: ["corporate", "night"], // corporate is great for light mode, night for dark
-  },
 };

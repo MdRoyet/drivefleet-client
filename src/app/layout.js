@@ -1,12 +1,19 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 
 export const metadata = {
   title: "DriveFleet - Car Rental Platform",
   description: "Explore, book, and manage your car rentals with ease.",
 };
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700", "900"],
+  display: "swap",
+});
 
 export default function RootLayout({ children }) {
   return (
