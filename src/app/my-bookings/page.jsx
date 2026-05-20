@@ -10,6 +10,10 @@ export default function MyBookingsPage() {
   const { data: session, isPending } = authClient.useSession();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cancelSubmitLoading, setCancelSubmitLoading] = useState(false);
+
+  // ⚡ NEW STATE: Tracks which booking is actively loaded into the cancellation form modal
+  const [cancellingBooking, setCancellingBooking] = useState(null);
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -45,39 +49,55 @@ export default function MyBookingsPage() {
     if (session) fetchMyBookings();
   }, [session]);
 
-  // ⚡ NEW: Cancellation Handler with state sync
-  const handleCancelBooking = async (id) => {
-    const confirmation = window.confirm(
-      "Are you sure you want to cancel this reservation? A full refund will be automatically issued to your original payment method.",
-    );
-    if (!confirmation) return;
+  // ⚡ UPDATED: Final execution pipeline called exclusively from the confirmation modal form
+  const executeCancellation = async (e) => {
+    e.preventDefault(); // Intercept form submission
+    if (!cancellingBooking) return;
 
+    setCancelSubmitLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/bookings/${id}/cancel`,
+        `http://localhost:5000/api/bookings/${cancellingBooking._id}/cancel`,
         {
           method: "PATCH",
-          credentials: "include", // Carries token cookie authorization parameters
+          credentials: "include",
         },
       );
       const result = await response.json();
 
       if (result.success) {
-        toast.success("Reservation cancelled. Refund issued.");
+        // 🌟 TOAST NOTIFICATION: Triggered dynamically right after a successful cancel event
+        toast.success(
+          `Successfully cancelled reservation for ${cancellingBooking.carName}!`,
+          {
+            duration: 5000,
+            position: "top-center",
+            style: {
+              background: "#1e293b",
+              color: "#fff",
+              border: "1px solid #f43f5e",
+            },
+          },
+        );
 
-        // Reactively update local component state array maps
+        // Reactively update client state arrays
         setBookings((prev) =>
           prev.map((b) =>
-            b._id === id
+            b._id === cancellingBooking._id
               ? { ...b, status: "Cancelled", refundStatus: "Fully Refunded" }
               : b,
           ),
         );
+
+        // Dismiss the modal form
+        setCancellingBooking(null);
       } else {
         toast.error(result.message || "Cancellation sequence rejected.");
       }
     } catch (error) {
       toast.error("Network communication interface fault.");
+    } finally {
+      setCancelSubmitLoading(false);
     }
   };
 
@@ -159,11 +179,10 @@ export default function MyBookingsPage() {
                             {booking.carName}
                           </h3>
 
-                          {/* 🔄 Dynamic Visual Pill Badges */}
                           <span
                             className={`text-[10px] border px-2.5 py-0.5 rounded-full font-black uppercase tracking-widest ${
                               isCancelled
-                                ? "bg-rose-500/20 border-rose-400/40 text-rose-400 animate-pulse-slow"
+                                ? "bg-rose-500/20 border-rose-400/40 text-rose-400"
                                 : "bg-emerald-500/20 border-emerald-400/40 text-emerald-400"
                             }`}
                           >
@@ -207,11 +226,12 @@ export default function MyBookingsPage() {
                         </div>
                       </div>
 
-                      {/* 🛠️ Dynamic Action Buttons block logic column */}
+                      {/* Action Trigger Elements */}
                       <div className="flex items-start md:justify-end">
                         {!isCancelled ? (
                           <button
-                            onClick={() => handleCancelBooking(booking._id)}
+                            /* ⚡ UPDATED: Pops up the modal state container instead of a block prompt alert */
+                            onClick={() => setCancellingBooking(booking)}
                             className="btn btn-outline btn-error btn-xs rounded-xl px-4 h-9 min-h-0 text-xs font-bold uppercase tracking-wider hover:scale-[1.02] transition-transform"
                           >
                             🚫 Cancel Trip
@@ -224,9 +244,8 @@ export default function MyBookingsPage() {
                       </div>
                     </div>
 
-                    {/* 💰 HIGH VISIBILITY RECEIPT OR REFUND SUMMARY DISPLAY BANNER */}
+                    {/* Cost / Refund Summaries */}
                     {!isCancelled ? (
-                      /* Active Billing Display Frame */
                       <div className="bg-black/30 border-2 border-white/10 px-6 py-3.5 rounded-xl flex items-center justify-between shadow-inner">
                         <span className="text-[10px] text-primary font-black uppercase tracking-widest">
                           Net Cost
@@ -236,7 +255,6 @@ export default function MyBookingsPage() {
                         </span>
                       </div>
                     ) : (
-                      /* ⚡ NEW: EYE-CATCHING HIGH CONTRAST NEON REFUND CONFIRMATION ALERT BAR */
                       <div className="bg-gradient-to-r from-rose-500/15 via-rose-500/5 to-rose-500/15 border-2 border-rose-500/40 px-6 py-3.5 rounded-xl flex items-center justify-between shadow-[0_0_15px_rgba(244,63,94,0.1)]">
                         <div>
                           <p className="text-[10px] text-rose-400 font-black uppercase tracking-widest flex items-center gap-1">
@@ -247,7 +265,7 @@ export default function MyBookingsPage() {
                           </p>
                         </div>
                         <div className="text-right">
-                          <span className="text-2xl font-black text-rose-400 font-black">
+                          <span className="text-2xl font-black text-rose-400">
                             +${booking.totalPrice}
                           </span>
                         </div>
@@ -257,6 +275,85 @@ export default function MyBookingsPage() {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* 🛠️ NEW: HIGH-CONTRAST INTERACTIVE CANCELLATION FORM MODAL */}
+        {cancellingBooking && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-[250] animate-fade-in">
+            <div className="bg-[#111827] border-2 border-rose-500/30 w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+              {/* Top ambient alarming decorative red glow spot */}
+              <div className="absolute top-0 right-0 w-24 h-24 bg-rose-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+              <div className="mb-4 text-center sm:text-left">
+                <span className="text-2xl mb-1 block">⚠️</span>
+                <h3 className="text-xl font-black text-white">
+                  Cancel Reservation for{" "}
+                  <span className="text-rose-400">
+                    {cancellingBooking.carName}
+                  </span>
+                  ?
+                </h3>
+              </div>
+
+              {/* 📖 REFUND POLICY DETAIL SUMMARY TEXT BOX BOX */}
+              <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 my-4 space-y-2 text-xs leading-relaxed text-gray-300">
+                <p className="font-bold uppercase tracking-wider text-rose-400 text-[10px]">
+                  Official Fleet Refund Policy:
+                </p>
+                <ul className="list-disc list-inside space-y-1 text-gray-400">
+                  <li>
+                    A full 100% refund value of{" "}
+                    <span className="text-white font-bold">
+                      ${cancellingBooking.totalPrice}
+                    </span>{" "}
+                    will be instantly reversed.
+                  </li>
+                  <li>
+                    Funds are returned directly to your associated platform
+                    digital wallet profile ledger.
+                  </li>
+                  <li>
+                    This operational withdrawal action is immediate, permanent,
+                    and{" "}
+                    <span className="text-rose-400 font-bold">
+                      cannot be undone
+                    </span>
+                    .
+                  </li>
+                </ul>
+              </div>
+
+              {/* Action Form Confirmation Pipeline wrapper */}
+              <form onSubmit={executeCancellation} className="space-y-4 pt-2">
+                <p className="text-xs text-gray-400 text-center sm:text-left">
+                  Are you certain you want to release this vehicle configuration
+                  slot?
+                </p>
+
+                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/5">
+                  <button
+                    type="button"
+                    onClick={() => setCancellingBooking(null)}
+                    disabled={cancelSubmitLoading}
+                    className="btn btn-ghost btn-sm rounded-xl normal-case h-11 min-h-0 text-gray-400 hover:bg-white/5 font-medium"
+                  >
+                    Keep Booking
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={cancelSubmitLoading}
+                    className="btn btn-error btn-sm rounded-xl normal-case h-11 min-h-0 text-white font-black tracking-wide shadow-md shadow-rose-900/40"
+                  >
+                    {cancelSubmitLoading ? (
+                      <span className="loading loading-spinner loading-sm"></span>
+                    ) : (
+                      "Yes, Cancel Trip"
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         )}
       </div>
