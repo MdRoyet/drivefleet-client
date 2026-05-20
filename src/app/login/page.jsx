@@ -19,10 +19,47 @@ export default function LoginPage() {
     setIsPending(true);
 
     // BetterAuth Email Sign In
-    const { data, error } = await authClient.signIn.email({
-      email,
-      password,
-    });
+    const { data, error } = await authClient.signIn.email(
+      {
+        email,
+        password,
+      },
+      {
+        // ⚡ FIX: Grab the network context (ctx) directly from the immediate signIn success event!
+        onSuccess: async (ctx) => {
+          // Extract the Asymmetric JWT from the response headers
+          let jwtToken = ctx.response.headers.get("set-auth-jwt");
+
+          // ⚡ FALLBACK: If header is not exposed/sent on sign-in, retrieve dynamically!
+          if (!jwtToken) {
+            try {
+              const { data } = await authClient.token();
+              jwtToken = data?.token;
+            } catch (err) {
+              console.error("Failed to fetch token dynamically on login success:", err);
+            }
+          }
+
+          // 🔍 DEBUG: Let's see what we are getting!
+          console.log("Extracted JWT Token:", jwtToken);
+
+          if (jwtToken) {
+            // Send it to our Next.js API route to lock it in an HTTPOnly cookie
+            await fetch("/api/store-jwt", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ token: jwtToken }),
+            });
+
+            console.log("🔒 Secure JWT cookie established!");
+          } else {
+            console.error(
+              "❌ JWT was null! Better Auth did not send the header. Check if JWT plugin is enabled in auth.js",
+            );
+          }
+        },
+      },
+    );
 
     setIsPending(false);
 
@@ -35,6 +72,7 @@ export default function LoginPage() {
 
     toast.success("Login Successful! Welcome back.");
     router.push("/"); // Redirect to home on success
+    router.refresh(); // Refresh Next.js router to update navbar states globally
   };
 
   const handleGoogleLogin = async () => {

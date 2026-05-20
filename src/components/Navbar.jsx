@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
@@ -11,8 +12,31 @@ const Navbar = () => {
   const isLoggedIn = !!session;
   const user = session?.user;
 
+  useEffect(() => {
+    const syncCookie = async () => {
+      if (session) {
+        try {
+          const { data } = await authClient.token();
+          if (data?.token) {
+            await fetch("/api/store-jwt", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ token: data.token }),
+            });
+          }
+        } catch (err) {
+          console.error("JWT sync failure:", err);
+        }
+      }
+    };
+    syncCookie();
+  }, [session]);
+
   const handleLogout = async () => {
     try {
+      // ⚡ Clear the secure JWT cookie proxy cleanly
+      await fetch("/api/store-jwt", { method: "DELETE" });
+
       const { error } = await authClient.signOut();
 
       if (error) {
@@ -21,7 +45,7 @@ const Navbar = () => {
       }
 
       toast.success("Successfully logged out!");
-      router.push("/");
+      router.push("/login");
       router.refresh();
     } catch (err) {
       toast.error("Logout failed. Please try again.");
