@@ -21,7 +21,7 @@ const Navbar = () => {
       }
 
       toast.success("Successfully logged out!");
-      router.push("/login");
+      router.push("/");
       router.refresh();
     } catch (err) {
       toast.error("Logout failed. Please try again.");

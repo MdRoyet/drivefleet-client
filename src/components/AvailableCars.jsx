@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+// ⚡ IMPORT FRAMER MOTION NODES
+import { motion } from "framer-motion";
 
 export default function AvailableCars() {
   const [cars, setCars] = useState([]);
@@ -12,14 +14,10 @@ export default function AvailableCars() {
       try {
         const response = await fetch("http://localhost:5000/api/cars");
         const result = await response.json();
-
         if (result.success) {
-          // 1. Filter out unavailable profiles
           const readyToRent = result.data.filter(
             (car) => car.availabilityStatus === "Available",
           );
-
-          // 2. ⚡ REMOVED THE SLICE: Stores all available listings from MongoDB
           setCars(readyToRent);
         }
       } catch (error) {
@@ -28,9 +26,29 @@ export default function AvailableCars() {
         setLoading(false);
       }
     };
-
     fetchAvailableCars();
   }, []);
+
+  // 🎬 FRAMER MOTION DEFINITION VARIANT 1: Staggered Container Orchestration Layout
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15, // Cascades entrance animations by 150ms per item
+      },
+    },
+  };
+
+  // 🎬 FRAMER MOTION DEFINITION VARIANT 2: Card Smooth Entrance
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring", stiffness: 100, damping: 15 },
+    },
+  };
 
   if (loading) {
     return (
@@ -44,11 +62,15 @@ export default function AvailableCars() {
   }
 
   return (
-    /* ⚠️ SET TO bg-transparent: Blends beautifully into your page.jsx watermark layout background */
     <section className="bg-transparent py-16 px-4 sm:px-8 text-base-content">
       <div className="max-w-7xl mx-auto">
-        {/* Section Heading Header Row */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-base-content/10 pb-6">
+        {/* Animated Section Heading Header Row */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-base-content/10 pb-6"
+        >
           <div className="text-left">
             <span className="text-xs font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
               Live Fleet Inventory
@@ -71,9 +93,8 @@ export default function AvailableCars() {
               →
             </span>
           </Link>
-        </div>
+        </motion.div>
 
-        {/* Dynamic Presentation Grid Mapping */}
         {cars.length === 0 ? (
           <div className="text-center py-16 bg-base-content/[0.02] border border-dashed border-base-content/10 rounded-3xl backdrop-blur-sm">
             <p className="text-lg font-bold text-base-content/60">
@@ -84,26 +105,39 @@ export default function AvailableCars() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          /* ⚡ MOUNT MOTION GRID MODULE: Orchestrates structural item entry lines */
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
             {cars.map((car) => (
-              <div
+              /* ⚡ MOUNT MOTION CAR ITEM: Binds entry trajectories and layout hover springs */
+              <motion.div
                 key={car._id}
-                className="group bg-base-100/40 backdrop-blur-md border border-base-content/10 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between hover:border-primary/40 hover:scale-[1.01] transition-all duration-300"
+                variants={cardVariants}
+                whileHover={{
+                  y: -8, // Lifts item subtly 8px upwards
+                  scale: 1.015,
+                  boxShadow: "0px 20px 30px rgba(0, 0, 0, 0.15)",
+                }}
+                className="group bg-base-100/40 backdrop-blur-md border border-base-content/10 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between hover:border-primary/40 transition-colors duration-300"
               >
-                {/* Upper Thumbnail Card Partition */}
                 <div>
                   <div className="w-full h-52 relative bg-base-content/5 overflow-hidden border-b border-base-content/10">
-                    <img
+                    <motion.img
+                      whileHover={{ scale: 1.05 }} // Zooms focus over background frames cleanly
+                      transition={{ duration: 0.4 }}
                       src={car.imageUrl}
                       alt={car.carName}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover"
                     />
-                    <span className="absolute top-4 right-4 text-xs font-black uppercase tracking-widest px-3.5 py-1 rounded-full bg-emerald-600 text-white shadow-xl border border-emerald-500 z-20">
+                    <span className="absolute top-4 right-4 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-emerald-600 text-white shadow-xl border border-emerald-500 z-20">
                       Available
                     </span>
                   </div>
 
-                  {/* Core Specifications */}
                   <div className="p-6 text-left">
                     <div className="flex justify-between items-start gap-2">
                       <h3 className="text-xl font-black text-base-content group-hover:text-primary transition-colors truncate">
@@ -135,7 +169,6 @@ export default function AvailableCars() {
                   </div>
                 </div>
 
-                {/* Footer Dynamic Actions */}
                 <div className="p-6 pt-0 flex items-center justify-between gap-4">
                   <div className="text-left">
                     <span className="text-[10px] text-base-content/40 block uppercase font-bold tracking-wider">
@@ -147,16 +180,22 @@ export default function AvailableCars() {
                     <span className="text-xs text-base-content/60">/day</span>
                   </div>
 
-                  <Link
-                    href={`/cars/${car._id}`}
-                    className="btn btn-primary btn-sm h-11 min-h-0 text-white font-bold text-xs uppercase tracking-wider px-5 rounded-xl transition-all shadow-md active:scale-[0.98]"
+                  {/* Animated Details Button element */}
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    View Details
-                  </Link>
+                    <Link
+                      href={`/cars/${car._id}`}
+                      className="btn btn-primary btn-sm h-11 min-h-0 text-white font-bold text-xs uppercase tracking-wider px-5 rounded-xl transition-all shadow-md"
+                    >
+                      View Details
+                    </Link>
+                  </motion.div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
     </section>
