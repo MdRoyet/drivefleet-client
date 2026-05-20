@@ -11,7 +11,6 @@ export default function MyBookingsPage() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 1. Route Guard: Block access for unauthenticated traffic
   useEffect(() => {
     if (!isPending && !session) {
       toast.error("Please login to view your active bookings.");
@@ -19,7 +18,6 @@ export default function MyBookingsPage() {
     }
   }, [session, isPending, router]);
 
-  // 2. Fetch bookings assigned to this user profile context email parameter
   useEffect(() => {
     const fetchMyBookings = async () => {
       if (!session?.user?.email) return;
@@ -27,7 +25,7 @@ export default function MyBookingsPage() {
         const response = await fetch(
           `http://localhost:5000/api/my-bookings?email=${session.user.email}`,
           {
-            credentials: "include", // Feeds authorization sessions forward
+            credentials: "include",
           },
         );
         const result = await response.json();
@@ -38,7 +36,7 @@ export default function MyBookingsPage() {
           toast.error("Failed to map user transaction logs.");
         }
       } catch (error) {
-        console.error("Network dashboard connection exception:", error);
+        console.error("Network connection failure:", error);
       } finally {
         setLoading(false);
       }
@@ -56,23 +54,23 @@ export default function MyBookingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0b0f19] bg-gradient-to-br from-[#0b0f19] via-[#111827] to-[#0b0f19] py-12 px-4 sm:px-6 lg:px-8 text-white">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-[#0b0f19] bg-gradient-to-br from-[#0b0f19] via-[#0f172a] to-[#0b0f19] py-12 px-4 sm:px-6 lg:px-8 text-white">
+      <div className="max-w-5xl mx-auto">
         {/* Header Block Section */}
         <div className="mb-10 border-b border-white/5 pb-6">
           <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
             My Bookings{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">
-              Dashboard
+              Ledger
             </span>
           </h1>
           <p className="text-sm text-gray-400 mt-2">
-            Track validation summaries, active execution parameters, and status
-            receipts for your vehicle rentals.
+            Review live transaction receipts, booking schedules, and operational
+            checkouts.
           </p>
         </div>
 
-        {/* Dynamic Card Presentation Grid Structure */}
+        {/* Presentation Grid Container Block node element array */}
         {bookings.length === 0 ? (
           <div className="text-center py-20 bg-white/[0.01] border border-dashed border-white/10 rounded-3xl">
             <p className="text-xl font-bold text-gray-400">
@@ -84,9 +82,8 @@ export default function MyBookingsPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-6">
             {bookings.map((booking) => {
-              // ⚠️ NEW DATE EXPLORATION: Parsing string timestamps to produce beautiful, readable UI parameters
               const formattedDate = new Date(
                 booking.bookingDate,
               ).toLocaleDateString("en-US", {
@@ -100,10 +97,10 @@ export default function MyBookingsPage() {
               return (
                 <div
                   key={booking._id}
-                  className="bg-white/[0.02] border border-white/10 rounded-2xl overflow-hidden shadow-xl flex flex-col sm:flex-row items-stretch transition-all duration-200 hover:border-white/20"
+                  className="bg-gradient-to-r from-[#131c30] to-[#1e293b] border-2 border-white/5 hover:border-primary/40 rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row items-stretch transition-all duration-300 relative"
                 >
-                  {/* Left thumbnail subframe layout card partition */}
-                  <div className="w-full sm:w-44 h-40 sm:h-auto bg-white/5 flex-shrink-0 relative border-b sm:border-b-0 sm:border-r border-white/5">
+                  {/* Left Side: Thumbnail Preview Element Box module */}
+                  <div className="w-full md:w-56 h-44 md:h-auto bg-black/20 flex-shrink-0 relative border-b md:border-b-0 md:border-r border-white/5">
                     <img
                       src={booking.imageUrl}
                       alt={booking.carName}
@@ -111,55 +108,58 @@ export default function MyBookingsPage() {
                     />
                   </div>
 
-                  {/* Right metadata descriptive content layout card partition */}
-                  <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                    <div>
-                      <div className="flex justify-between items-start gap-2">
-                        <h3 className="text-lg font-black tracking-tight text-white">
+                  {/* Right Side: High Contrast Receipt Form Ledger Breakdowns Info Panel container */}
+                  <div className="p-6 flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                    <div className="space-y-2 max-w-md">
+                      <div className="flex items-center gap-3">
+                        <h3 className="text-xl font-black tracking-tight text-white">
                           {booking.carName}
                         </h3>
-                        <span className="text-[9px] bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 rounded-full text-emerald-400 font-bold uppercase tracking-widest">
+                        <span className="text-[10px] bg-emerald-500/20 border border-emerald-400/40 px-3 py-1 rounded-full text-emerald-400 font-black uppercase tracking-widest">
                           {booking.status || "Confirmed"}
                         </span>
                       </div>
 
-                      <p className="text-[11px] text-gray-400 font-medium mt-1">
-                        🗓️ Booked:{" "}
-                        <span className="text-gray-300 font-normal ml-0.5">
+                      <p className="text-xs text-gray-400 font-semibold flex items-center gap-1.5">
+                        📆 Reservation Date:{" "}
+                        <span className="text-gray-200 font-bold">
                           {formattedDate}
                         </span>
                       </p>
 
-                      <div className="grid grid-cols-2 gap-x-2 gap-y-1.5 text-xs text-gray-400 font-light mt-4 pt-3 border-t border-white/5">
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-300 pt-3 border-t border-white/5 font-medium">
                         <p>
-                          ⏱️ Duration:{" "}
-                          <span className="text-white font-medium">
-                            {booking.rentalDays} Day(s)
+                          ⏱️ Rental Frame:{" "}
+                          <span className="text-primary font-black">
+                            {booking.rentalDays} Days
                           </span>
                         </p>
                         <p>
-                          🤵 Driver:{" "}
+                          🤵 Driver Surcharge:{" "}
                           <span
-                            className={`font-semibold ${booking.driverNeeded === "Yes" ? "text-primary" : "text-gray-400"}`}
+                            className={
+                              booking.driverNeeded === "Yes"
+                                ? "text-purple-400 font-black"
+                                : "text-gray-500 font-bold"
+                            }
                           >
                             {booking.driverNeeded}
                           </span>
                         </p>
-                        <p className="col-span-2 truncate text-[11px] text-gray-500 mt-1 italic">
-                          📝{" "}
-                          {booking.specialNote
-                            ? `"${booking.specialNote}"`
-                            : "No custom notes designated."}
-                        </p>
+                        {booking.specialNote && (
+                          <p className="col-span-2 text-[11px] text-gray-400 bg-black/20 px-3 py-2 rounded-xl mt-2 border border-white/5 truncate font-normal italic">
+                            "{booking.specialNote}"
+                          </p>
+                        )}
                       </div>
                     </div>
 
-                    {/* Footer aggregate absolute validation row */}
-                    <div className="flex justify-between items-center bg-white/[0.02] px-3 py-2 rounded-xl border border-white/5">
-                      <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
-                        Total Receipt
+                    {/* 💰 EXTRA HIGH VISIBILITY RECEIPT TOTAL VALUE CONTAINER PILL */}
+                    <div className="bg-black/30 border-2 border-white/10 px-6 py-4 rounded-xl flex flex-row sm:flex-col justify-between sm:justify-center items-center gap-1 sm:text-center min-w-[140px] shadow-inner">
+                      <span className="text-[10px] text-primary font-black uppercase tracking-widest">
+                        Net Cost
                       </span>
-                      <span className="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300">
+                      <span className="text-3xl font-black text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.1)]">
                         ${booking.totalPrice}
                       </span>
                     </div>
