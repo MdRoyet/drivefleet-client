@@ -162,11 +162,23 @@ export default function MyAddedCarsPage() {
                       alt={car.carName}
                       className="w-full h-full object-cover"
                     />
+                    {/* CHANGE THE OLD WEAK-CONTRAST TAG INSIDE MY ADDED CARS: */}
                     <span
                       className={`absolute top-4 right-4 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full ${
                         car.availabilityStatus === "Available"
                           ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
                           : "bg-rose-500/20 text-rose-400 border border-rose-500/30"
+                      }`}
+                    >
+                      {car.availabilityStatus}
+                    </span>
+
+                    {/* TO THIS IMMACULATE SOLID CONFIGURATION: */}
+                    <span
+                      className={`absolute top-4 right-4 text-xs font-black uppercase tracking-widest px-3.5 py-1 rounded-full shadow-xl border z-20 ${
+                        car.availabilityStatus === "Available"
+                          ? "bg-emerald-600 text-white border-emerald-500"
+                          : "bg-rose-600 text-white border-rose-500"
                       }`}
                     >
                       {car.availabilityStatus}

@@ -138,13 +138,26 @@ export default function ExploreCarsPage() {
                   key={car._id}
                   className="group bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex flex-col hover:border-primary/40 hover:scale-[1.01] transition-all duration-300 relative"
                 >
-                  {/* Visual Availability State Top-Pinned Pill Badge */}
+                  {/* CHANGE THE OLD SEMI-TRANSPARENT BADGE INSIDE EXPLORE CARS: */}
                   <div className="absolute top-4 right-4 z-20">
                     <span
                       className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-md backdrop-blur-md ${
                         isAvailable
                           ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
                           : "bg-rose-500/15 text-rose-400 border border-rose-500/30"
+                      }`}
+                    >
+                      {car.availabilityStatus}
+                    </span>
+                  </div>
+
+                  {/* TO THIS SOLID HIGH-CONTRAST BADGE SYSTEM: */}
+                  <div className="absolute top-4 right-4 z-20">
+                    <span
+                      className={`text-xs font-black uppercase tracking-widest px-3.5 py-1 rounded-full shadow-xl border ${
+                        isAvailable
+                          ? "bg-emerald-600 text-white border-emerald-500"
+                          : "bg-rose-600 text-white border-rose-500"
                       }`}
                     >
                       {car.availabilityStatus}
