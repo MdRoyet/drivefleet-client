@@ -2,63 +2,84 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { authClient } from "@/lib/auth-client";
 
 export default function RegisterPage() {
-  // Form input states
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     photoUrl: "",
     password: "",
   });
-
-  // Validation error state
   const [passwordError, setPasswordError] = useState("");
+  const [isPending, setIsPending] = useState(false);
 
-  // Handle inputs dynamically
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-
-    // Clear the error message while the user is typing a new password
-    if (name === "password") {
-      setPasswordError("");
-    }
+    if (name === "password") setPasswordError("");
   };
 
-  // Client-side password validation function
   const validatePassword = (password) => {
-    if (password.length < 6) {
+    if (password.length < 6)
       return "Password length must be at least 6 characters.";
-    }
-    if (!/[A-Z]/.test(password)) {
+    if (!/[A-Z]/.test(password))
       return "Password must have an Uppercase letter.";
-    }
-    if (!/[a-z]/.test(password)) {
+    if (!/[a-z]/.test(password))
       return "Password must have a Lowercase letter.";
-    }
-    return ""; // No error found
+    return "";
   };
 
-  const handleSubmit = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
-    // Trigger validation
     const errorMsg = validatePassword(formData.password);
-
     if (errorMsg) {
-      // Show password error in the form, and block registration
       setPasswordError(errorMsg);
+      toast.error(errorMsg);
       return;
     }
 
-    // TODO: Proceed with your backend registration API call or Firebase sign-up in Phase 2
-    console.log("Registration Form Submitted successfully!", formData);
+    setIsPending(true);
+
+    // BetterAuth Email Sign Up
+    const { data, error } = await authClient.signUp.email({
+      email: formData.email,
+      password: formData.password,
+      name: formData.name,
+      image: formData.photoUrl, // Sending photoUrl seamlessly to BetterAuth profile
+    });
+
+    setIsPending(false);
+
+    if (error) {
+      toast.error(error.message || "Registration failed. Please try again.");
+      return;
+    }
+
+    toast.success("Registration successful! Please login.");
+    router.push("/login"); // Redirect to Login page on success
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsPending(true);
+    const { data, error } = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
+
+    setIsPending(false);
+
+    if (error) {
+      toast.error(error.message || "Google Login failed.");
+    }
   };
 
   return (
     <div className="flex items-center justify-center min-h-[90vh] px-4 py-12 relative z-10 w-full max-w-7xl mx-auto">
-      {/* Massive Glass Container */}
       <div className="flex flex-col lg:flex-row w-full rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/20">
         {/* LEFT SIDE: Big Cars Picture */}
         <div className="w-full lg:w-1/2 relative min-h-[300px] lg:min-h-full">
@@ -68,7 +89,6 @@ export default function RegisterPage() {
             className="absolute inset-0 w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-black/80 via-black/20 to-transparent"></div>
-
           <div className="absolute bottom-10 left-10 text-white z-10 hidden sm:block">
             <h3 className="text-3xl font-black mb-2">Drive Fleet</h3>
             <p className="text-white/80 font-medium">
@@ -77,7 +97,7 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        {/* RIGHT SIDE: Crystal Glass Background Form */}
+        {/* RIGHT SIDE: Form */}
         <div
           className="w-full lg:w-1/2 relative p-8 sm:p-12 flex flex-col justify-center bg-cover bg-center"
           style={{
@@ -87,7 +107,6 @@ export default function RegisterPage() {
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-0"></div>
 
-          {/* Form Content */}
           <div className="relative z-10 text-white">
             <h2 className="text-4xl font-black text-center mb-2 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">
               Create Account
@@ -96,9 +115,7 @@ export default function RegisterPage() {
               Join DriveFleet and start your journey today.
             </p>
 
-            {/* Registration Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Name Field */}
+            <form onSubmit={handleRegister} className="space-y-4">
               <div className="form-control w-full">
                 <label className="label py-0.5">
                   <span className="label-text font-bold text-white/90 uppercase tracking-wider text-xs">
@@ -113,10 +130,10 @@ export default function RegisterPage() {
                   placeholder="Enter your name"
                   className="input input-bordered w-full bg-white/10 text-white focus:bg-white/20 border-white/20 focus:border-primary placeholder:text-white/40 transition-all h-11"
                   required
+                  disabled={isPending}
                 />
               </div>
 
-              {/* Email Field */}
               <div className="form-control w-full">
                 <label className="label py-0.5">
                   <span className="label-text font-bold text-white/90 uppercase tracking-wider text-xs">
@@ -131,10 +148,10 @@ export default function RegisterPage() {
                   placeholder="Enter your email"
                   className="input input-bordered w-full bg-white/10 text-white focus:bg-white/20 border-white/20 focus:border-primary placeholder:text-white/40 transition-all h-11"
                   required
+                  disabled={isPending}
                 />
               </div>
 
-              {/* Photo URL Field */}
               <div className="form-control w-full">
                 <label className="label py-0.5">
                   <span className="label-text font-bold text-white/90 uppercase tracking-wider text-xs">
@@ -149,10 +166,10 @@ export default function RegisterPage() {
                   placeholder="Paste profile image link"
                   className="input input-bordered w-full bg-white/10 text-white focus:bg-white/20 border-white/20 focus:border-primary placeholder:text-white/40 transition-all h-11"
                   required
+                  disabled={isPending}
                 />
               </div>
 
-              {/* Password Field with Dynamic Error Display */}
               <div className="form-control w-full">
                 <label className="label py-0.5">
                   <span className="label-text font-bold text-white/90 uppercase tracking-wider text-xs">
@@ -165,15 +182,11 @@ export default function RegisterPage() {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Create a strong password"
-                  className={`input input-bordered w-full bg-white/10 text-white focus:bg-white/20 placeholder:text-white/40 transition-all h-11 ${
-                    passwordError
-                      ? "border-error ring-1 ring-error focus:border-error"
-                      : "border-white/20 focus:border-primary"
-                  }`}
+                  className={`input input-bordered w-full bg-white/10 text-white focus:bg-white/20 placeholder:text-white/40 transition-all h-11 ${passwordError ? "border-error ring-1 ring-error focus:border-error" : "border-white/20 focus:border-primary"}`}
                   required
+                  disabled={isPending}
                 />
 
-                {/* Conditional Rendering of inline Error Message */}
                 {passwordError ? (
                   <label className="label py-1">
                     <span className="label-text-alt text-error font-semibold flex items-center gap-1 bg-error/10 px-2 py-1 rounded w-full border border-error/20">
@@ -190,22 +203,24 @@ export default function RegisterPage() {
                 )}
               </div>
 
-              {/* Register Button */}
               <button
                 type="submit"
                 className="btn border-none bg-primary hover:bg-primary-focus w-full mt-2 text-white text-lg shadow-[0_0_20px_rgba(var(--tw-colors-primary),0.5)] hover:scale-[1.02] transition-transform rounded-xl h-11"
+                disabled={isPending}
               >
-                Register
+                {isPending ? "Registering..." : "Register"}
               </button>
             </form>
 
-            {/* Divider */}
             <div className="divider before:bg-white/20 after:bg-white/20 text-white/50 my-6 text-sm font-bold uppercase tracking-widest">
               Or
             </div>
 
-            {/* Google Login Button */}
-            <button className="btn btn-outline w-full text-white hover:bg-white/20 hover:border-white border-white/30 flex items-center justify-center gap-3 transition-all rounded-xl shadow-lg h-11">
+            <button
+              onClick={handleGoogleLogin}
+              className="btn btn-outline w-full text-white hover:bg-white/20 hover:border-white border-white/30 flex items-center justify-center gap-3 transition-all rounded-xl shadow-lg h-11"
+              disabled={isPending}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 48 48"

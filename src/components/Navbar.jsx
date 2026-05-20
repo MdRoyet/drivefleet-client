@@ -1,9 +1,32 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
-  // STATIC STATE: Set to false to see the Login & Register buttons.
-  // We will make this functional later.
-  const isLoggedIn = false;
+  const router = useRouter();
+  const { data: session, isPending } = authClient.useSession();
+  const isLoggedIn = !!session;
+  const user = session?.user;
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await authClient.signOut();
+
+      if (error) {
+        toast.error(error.message || "Logout failed");
+        return;
+      }
+
+      toast.success("Successfully logged out!");
+      router.push("/login");
+      router.refresh();
+    } catch (err) {
+      toast.error("Logout failed. Please try again.");
+    }
+  };
 
   const navLinks = (
     <>
@@ -17,7 +40,6 @@ const Navbar = () => {
           Explore Cars
         </Link>
       </li>
-      {/* Showing these in the main nav per requirement */}
       {isLoggedIn && (
         <>
           <li>
@@ -39,7 +61,7 @@ const Navbar = () => {
   );
 
   return (
-    <div className="navbar bg-base-100 shadow-sm px-4 sm:px-8 border-b border-base-200">
+    <div className="navbar bg-base-100 shadow-sm px-4 sm:px-8 border-b border-base-200 sticky top-0 z-50">
       {/* Mobile Menu & Logo */}
       <div className="navbar-start">
         <div className="dropdown">
@@ -61,11 +83,10 @@ const Navbar = () => {
           </div>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+            className="menu menu-sm dropdown-content mt-3 z-[100] p-2 shadow bg-base-100 rounded-box w-52"
           >
             {navLinks}
-            {/* Show Login/Register in mobile menu if not logged in */}
-            {!isLoggedIn && (
+            {!isPending && !isLoggedIn && (
               <>
                 <div className="divider my-1"></div>
                 <li>
@@ -86,7 +107,6 @@ const Navbar = () => {
           href="/"
           className="btn btn-ghost text-2xl font-bold text-primary gap-2"
         >
-          {/* Car Icon for Logo */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -112,52 +132,97 @@ const Navbar = () => {
 
       {/* User Profile OR Login/Register */}
       <div className="navbar-end">
-        {isLoggedIn ? (
+        {isPending ? (
+          <div className="flex items-center justify-center w-10 h-10">
+            <span className="loading loading-spinner loading-md text-primary animate-pulse"></span>
+          </div>
+        ) : isLoggedIn ? (
           <div className="dropdown dropdown-end">
+            {/* ⚠️ VISUAL UPGRADE: Bordered Name & Avatar Capsule Trigger */}
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-ghost btn-circle avatar border-2 border-primary hover:border-primary-focus transition-all"
+              className="btn btn-ghost border border-primary/40 hover:border-primary hover:bg-primary/5 rounded-full flex items-center gap-3 pl-4 pr-1.5 py-1 h-12 min-h-0 shadow-sm transition-all duration-200 normal-case"
             >
-              <div className="w-10 rounded-full">
-                {/* Static placeholder image */}
-                <img
-                  alt="User Profile"
-                  src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff"
-                />
+              {/* Displaying name directly besides profile picture */}
+              <span className="font-bold text-sm max-w-[90px] sm:max-w-[140px] truncate text-base-content/90">
+                {user?.name}
+              </span>
+
+              <div className="avatar">
+                <div className="w-9 h-9 rounded-full ring-1 ring-primary/30">
+                  <img
+                    alt={user?.name || "User Profile"}
+                    src={
+                      user?.image ||
+                      `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "User")}&background=0D8ABC&color=fff`
+                    }
+                  />
+                </div>
               </div>
             </div>
+
             <ul
               tabIndex={0}
-              className="mt-3 z-[1] p-2 shadow-xl menu menu-sm dropdown-content bg-base-100 rounded-box w-52 border border-base-200"
+              className="mt-3 z-[100] p-2 shadow-xl menu menu-sm dropdown-content bg-base-100 rounded-box w-56 border border-base-200 backdrop-blur-md bg-opacity-95"
             >
-              <li className="menu-title text-primary">My Profile</li>
-              <li>
-                <Link href="/add-car">Add Car</Link>
+              <li className="px-4 py-2 border-b border-base-200 my-1 pointer-events-none">
+                <p className="font-bold text-base-content text-sm truncate">
+                  {user?.name}
+                </p>
+                <p className="text-xs text-base-content/60 truncate font-medium">
+                  {user?.email}
+                </p>
               </li>
               <li>
-                <Link href="/my-bookings">My Bookings</Link>
+                <Link
+                  href="/add-car"
+                  className="py-2.5 font-medium hover:text-primary transition-all"
+                >
+                  Add Car
+                </Link>
               </li>
               <li>
-                <Link href="/my-added-cars">My Added Cars</Link>
+                <Link
+                  href="/my-bookings"
+                  className="py-2.5 font-medium hover:text-primary transition-all"
+                >
+                  My Bookings
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/my-added-cars"
+                  className="py-2.5 font-medium hover:text-primary transition-all"
+                >
+                  My Added Cars
+                </Link>
               </li>
               <div className="divider my-1"></div>
               <li>
-                <button className="text-error font-semibold">Logout</button>
+                <a
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleLogout();
+                  }}
+                  className="text-error font-semibold py-2.5 hover:bg-error/10 transition-all cursor-pointer block"
+                >
+                  Logout
+                </a>
               </li>
             </ul>
           </div>
         ) : (
-          <div className="hidden lg:flex space-x-3">
+          <div className="flex space-x-2">
             <Link
               href="/login"
-              className="btn btn-outline btn-primary rounded-md px-6 hover:text-white"
+              className="btn btn-primary rounded-md px-4 sm:px-6 text-white shadow-sm hover:scale-[1.02] active:scale-95 transition-all duration-200 font-bold"
             >
               Login
             </Link>
             <Link
               href="/register"
-              className="btn btn-primary rounded-md px-6 text-white"
+              className="btn btn-outline btn-primary rounded-md px-4 sm:px-6 hidden sm:flex hover:scale-[1.02] active:scale-95 transition-all duration-200 font-bold"
             >
               Register
             </Link>
