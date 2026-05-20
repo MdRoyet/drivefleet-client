@@ -94,11 +94,6 @@ const Navbar = () => {
                     Login
                   </Link>
                 </li>
-                <li>
-                  <Link href="/register" className="text-primary font-medium">
-                    Register
-                  </Link>
-                </li>
               </>
             )}
           </ul>
@@ -130,7 +125,7 @@ const Navbar = () => {
         <ul className="menu menu-horizontal px-1 space-x-2">{navLinks}</ul>
       </div>
 
-      {/* User Profile OR Login/Register */}
+      {/* User Profile OR Login Button */}
       <div className="navbar-end">
         {isPending ? (
           <div className="flex items-center justify-center w-10 h-10">
@@ -138,13 +133,11 @@ const Navbar = () => {
           </div>
         ) : isLoggedIn ? (
           <div className="dropdown dropdown-end">
-            {/* ⚠️ VISUAL UPGRADE: Bordered Name & Avatar Capsule Trigger */}
             <div
               tabIndex={0}
               role="button"
               className="btn btn-ghost border border-primary/40 hover:border-primary hover:bg-primary/5 rounded-full flex items-center gap-3 pl-4 pr-1.5 py-1 h-12 min-h-0 shadow-sm transition-all duration-200 normal-case"
             >
-              {/* Displaying name directly besides profile picture */}
               <span className="font-bold text-sm max-w-[90px] sm:max-w-[140px] truncate text-base-content/90">
                 {user?.name}
               </span>
@@ -213,20 +206,13 @@ const Navbar = () => {
             </ul>
           </div>
         ) : (
-          <div className="flex space-x-2">
-            <Link
-              href="/login"
-              className="btn btn-primary rounded-md px-4 sm:px-6 text-white shadow-sm hover:scale-[1.02] active:scale-95 transition-all duration-200 font-bold"
-            >
-              Login
-            </Link>
-            <Link
-              href="/register"
-              className="btn btn-outline btn-primary rounded-md px-4 sm:px-6 hidden sm:flex hover:scale-[1.02] active:scale-95 transition-all duration-200 font-bold"
-            >
-              Register
-            </Link>
-          </div>
+          /* Only Login button appears here now */
+          <Link
+            href="/login"
+            className="btn btn-primary rounded-md px-5 sm:px-7 text-white shadow-sm hover:scale-[1.02] active:scale-95 transition-all duration-200 font-bold"
+          >
+            Login
+          </Link>
         )}
       </div>
     </div>

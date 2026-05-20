@@ -68,7 +68,7 @@ export default function RegisterPage() {
     setIsPending(true);
     const { data, error } = await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/",
+      callbackURL: "http://localhost:3000/",
     });
 
     setIsPending(false);

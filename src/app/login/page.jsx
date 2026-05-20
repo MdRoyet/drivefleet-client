@@ -42,7 +42,7 @@ export default function LoginPage() {
     // BetterAuth Social Sign In
     const { data, error } = await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/", // Redirect here after Google auth completes
+      callbackURL: "http://localhost:3000/", // Redirect here after Google auth completes
     });
 
     setIsPending(false);
