@@ -54,7 +54,7 @@ const Banner = () => {
               </svg>
             </Link>
             <Link
-              href="/login"
+              href="/explore-cars"
               className="btn btn-outline btn-lg rounded-full px-10 hover:scale-105 transition-all duration-300 backdrop-blur-sm"
             >
               Book Now
