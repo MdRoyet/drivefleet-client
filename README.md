@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🚗 DriveFleet - Client Application
 
-## Getting Started
+![Next.js](https://img.shields.io/badge/Next.js-black?style=for-the-badge&logo=next.js&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
-First, run the development server:
+The frontend interface for **DriveFleet**, a modern, full-stack vehicle booking and fleet management platform. Built for speed and security, this client-side application communicates seamlessly with a decoupled Express backend using mathematically verified **JSON Web Tokens (JWT)** via secure, cross-domain cookies.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📖 Project Details
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+**DriveFleet** is a comprehensive peer-to-peer car rental and fleet management solution designed to streamline the vehicle booking process. It empowers users to act as both renters and fleet managers within a single, unified dashboard. 
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**For Renters:**
+Users can browse a dynamic, real-time inventory of available vehicles, filter by car type, and make instant, secure bookings. A dedicated dashboard allows renters to track their active reservations or cancel bookings when plans change.
 
-## Learn More
+**For Fleet Managers (Owners):**
+Vehicle owners can easily list their cars on the platform. The application provides a complete CRUD (Create, Read, Update, Delete) interface, allowing owners to upload vehicle images, set daily pricing, update seating capacity, and toggle live availability status based on demand.
 
-To learn more about Next.js, take a look at the following resources:
+The platform is engineered with a strictly decoupled architecture, meaning this Next.js frontend focuses entirely on delivering a lightning-fast, edge-optimized user experience while relying on a separate Express/MongoDB gateway for heavy data processing and JWT security.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ✨ Key Features
 
-## Deploy on Vercel
+* **JWT Stateless Authentication:** Leverages Better Auth's JWT plugin to generate mathematically signed, tamper-proof session tokens.
+* **Cross-Domain Security:** Implements `SameSite=none` secure HTTP-only cookies, ensuring JWTs are safely transmitted between the Next.js frontend and the Express backend.
+* **Dynamic Fleet Inventory:** Browse real-time vehicle listings retrieved directly from MongoDB.
+* **Complete CRUD Dashboard:** Authenticated users can add, update, manage, and delete their own car listings.
+* **Transactional Booking System:** Seamlessly reserve vehicles and manage active or cancelled bookings from a private user dashboard.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Tech Stack
+
+* **Framework:** [Next.js](https://nextjs.org/) (React)
+* **Styling:** Tailwind CSS + DaisyUI
+* **Authentication Security:** JSON Web Tokens (JWT)
+* **Auth Provider:** [Better Auth](https://better-auth.com/) (Client SDK)
+* **State Management:** React Hooks (`useState`, `useEffect`)
+* **Notifications:** React Hot Toast
+* **Deployment:** Vercel
