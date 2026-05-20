@@ -12,7 +12,7 @@ export default function AvailableCars() {
   useEffect(() => {
     const fetchAvailableCars = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/cars");
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/cars`);
         const result = await response.json();
         if (result.success) {
           const readyToRent = result.data.filter(

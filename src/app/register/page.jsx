@@ -60,6 +60,10 @@ export default function RegisterPage() {
       return;
     }
 
+    // Better Auth auto-signs-in after registration — sign out immediately
+    // so the user sees the correct unauthenticated state on the login page.
+    await authClient.signOut();
+
     toast.success("Registration successful! Please login.");
     router.push("/login"); // Redirect to Login page on success
   };

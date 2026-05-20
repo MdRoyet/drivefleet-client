@@ -22,7 +22,7 @@ export default function CarDetailsPage({ params: paramsPromise }) {
     const fetchCarDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/cars/${params.id}`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/cars/${params.id}`,
         );
         const result = await response.json();
         if (result.success) {
@@ -76,7 +76,7 @@ export default function CarDetailsPage({ params: paramsPromise }) {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/bookings", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bookingPayload),
@@ -99,18 +99,18 @@ export default function CarDetailsPage({ params: paramsPromise }) {
 
   if (loading) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center bg-[#0b0f19]">
+      <div className="min-h-[80vh] flex items-center justify-center bg-base-100 text-base-content">
         <span className="loading loading-spinner loading-lg text-primary"></span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0b0f19] bg-gradient-to-br from-[#0b0f19] via-[#0f172a] to-[#0b0f19] py-12 px-4 sm:px-6 lg:px-8 text-white">
+    <div className="min-h-screen bg-base-100 bg-gradient-to-br from-base-100 via-base-200 to-base-100 py-12 px-4 sm:px-6 lg:px-8 text-base-content">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Side: Car Profile Details Visual Layout */}
-        <div className="lg:col-span-7 bg-white/[0.01] border border-white/5 p-6 rounded-3xl space-y-6">
-          <div className="w-full h-72 sm:h-96 rounded-2xl overflow-hidden relative border border-white/10">
+        <div className="lg:col-span-7 bg-base-200/50 border border-base-content/10 p-6 rounded-3xl space-y-6">
+          <div className="w-full h-72 sm:h-96 rounded-2xl overflow-hidden relative border border-base-content/10">
             <img
               src={car.imageUrl}
               alt={car.carName}
@@ -119,8 +119,8 @@ export default function CarDetailsPage({ params: paramsPromise }) {
             <span
               className={`absolute top-4 right-4 text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full backdrop-blur-md ${
                 car.availabilityStatus === "Available"
-                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
-                  : "bg-rose-500/20 text-rose-400 border border-rose-500/40"
+                  ? "bg-success/20 text-success border border-success/30"
+                  : "bg-error/20 text-error border border-error/30"
               }`}
             >
               {car.availabilityStatus}
@@ -128,29 +128,29 @@ export default function CarDetailsPage({ params: paramsPromise }) {
           </div>
 
           <div>
-            <div className="flex flex-wrap justify-between items-center gap-4 border-b border-white/5 pb-4">
+            <div className="flex flex-wrap justify-between items-center gap-4 border-b border-base-content/10 pb-4">
               <h1 className="text-3xl font-black tracking-tight">
                 {car.carName}
               </h1>
-              <span className="badge badge-primary font-bold px-4 py-3 text-white uppercase text-xs tracking-wider">
+              <span className="badge badge-primary font-bold px-4 py-3 text-primary-content uppercase text-xs tracking-wider">
                 {car.carType}
               </span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm text-gray-400 my-6">
-              <div className="bg-white/[0.02] border border-white/5 p-3 rounded-xl">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm text-base-content/60 my-6">
+              <div className="bg-base-200 border border-base-content/5 p-3 rounded-xl">
                 📍 Location{" "}
-                <p className="text-white font-bold mt-1 truncate">
+                <p className="text-base-content font-bold mt-1 truncate">
                   {car.pickupLocation}
                 </p>
               </div>
-              <div className="bg-white/[0.02] border border-white/5 p-3 rounded-xl">
+              <div className="bg-base-200 border border-base-content/5 p-3 rounded-xl">
                 👥 Capacity{" "}
-                <p className="text-white font-bold mt-1">
+                <p className="text-base-content font-bold mt-1">
                   {car.seatCapacity} Seats
                 </p>
               </div>
-              <div className="bg-white/[0.02] border border-white/5 p-3 rounded-xl">
+              <div className="bg-base-200 border border-base-content/5 p-3 rounded-xl">
                 💰 Base Rate{" "}
                 <p className="text-primary font-black mt-1">
                   ${car.dailyPrice}/Day
@@ -159,10 +159,10 @@ export default function CarDetailsPage({ params: paramsPromise }) {
             </div>
 
             <div className="space-y-2">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-base-content/60">
                 Description Overview
               </h3>
-              <p className="text-sm text-gray-300 leading-relaxed font-light">
+              <p className="text-sm text-base-content/85 leading-relaxed font-light">
                 {car.description}
               </p>
             </div>
@@ -170,15 +170,15 @@ export default function CarDetailsPage({ params: paramsPromise }) {
         </div>
 
         {/* ⚡ RIGHT SIDE: EYE-CATCHING NEON ACCENTED BOOKING FORM CONTAINER */}
-        <div className="lg:col-span-5 bg-[#131c2e] border-2 border-primary shadow-[0_0_30px_rgba(59,130,246,0.25)] p-6 sm:p-8 rounded-3xl relative overflow-hidden">
+        <div className="lg:col-span-5 bg-base-200 border-2 border-primary shadow-[0_0_30px_rgba(59,130,246,0.15)] p-6 sm:p-8 rounded-3xl relative overflow-hidden">
           {/* Ambient Inner Light Cone glow element */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-2xl pointer-events-none"></div>
 
           <div className="mb-6 relative z-10">
-            <h2 className="text-2xl font-black text-white flex items-center gap-2">
+            <h2 className="text-2xl font-black text-base-content flex items-center gap-2">
               🚀 Secure <span className="text-primary">Instant Booking</span>
             </h2>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-base-content/60 mt-1">
               Configure your trip logs to verify rental processing files.
             </p>
           </div>
@@ -190,24 +190,24 @@ export default function CarDetailsPage({ params: paramsPromise }) {
             <div className="grid grid-cols-2 gap-4">
               {/* Selector: Driver Request parameter option element */}
               <div className="flex flex-col gap-2">
-                <label className="text-xs font-black uppercase tracking-wider text-gray-300">
+                <label className="text-xs font-black uppercase tracking-wider text-base-content/80">
                   Driver Needed?
                 </label>
                 <select
                   value={driverNeeded}
                   onChange={(e) => setDriverNeeded(e.target.value)}
-                  className="w-full bg-[#1e293b] border-2 border-white/10 rounded-xl px-4 py-3 text-sm text-white font-bold focus:border-primary focus:outline-none transition-all cursor-pointer appearance-none"
+                  className="w-full bg-base-100 border-2 border-base-content/10 rounded-xl px-4 py-3 text-sm text-base-content font-bold focus:border-primary focus:outline-none transition-all cursor-pointer appearance-none"
                   style={{
-                    backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
+                    backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "right 1rem center",
                     backgroundSize: "1em",
                   }}
                 >
-                  <option value="No" className="bg-[#111827]">
+                  <option value="No">
                     No (Self Drive)
                   </option>
-                  <option value="Yes" className="bg-[#111827]">
+                  <option value="Yes">
                     Yes (+$25/day)
                   </option>
                 </select>
@@ -215,7 +215,7 @@ export default function CarDetailsPage({ params: paramsPromise }) {
 
               {/* Number Input: Trip Rental Time frame counter slider node */}
               <div className="flex flex-col gap-2">
-                <label className="text-xs font-black uppercase tracking-wider text-gray-300">
+                <label className="text-xs font-black uppercase tracking-wider text-base-content/80">
                   Duration (Days)
                 </label>
                 <input
@@ -227,7 +227,7 @@ export default function CarDetailsPage({ params: paramsPromise }) {
                       Math.max(1, parseInt(e.target.value, 10) || 1),
                     )
                   }
-                  className="w-full bg-[#1e293b] border-2 border-white/10 rounded-xl px-4 py-3 text-sm text-white font-black text-center focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                  className="w-full bg-base-100 border-2 border-base-content/10 rounded-xl px-4 py-3 text-sm text-base-content font-black text-center focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                   required
                 />
               </div>
@@ -235,14 +235,14 @@ export default function CarDetailsPage({ params: paramsPromise }) {
 
             {/* Custom Description Text Input field area box container */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-black uppercase tracking-wider text-gray-300">
+              <label className="text-xs font-black uppercase tracking-wider text-base-content/80">
                 Special Instructions / Notes
               </label>
               <textarea
                 placeholder="E.g. drop times, car seat configuration adjustments..."
                 value={specialNote}
                 onChange={(e) => setSpecialNote(e.target.value)}
-                className="w-full bg-[#1e293b] border-2 border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:border-primary focus:outline-none h-24 resize-none leading-relaxed transition-all"
+                className="w-full bg-base-100 border-2 border-base-content/10 rounded-xl px-4 py-3 text-sm text-base-content placeholder-base-content/30 focus:border-primary focus:outline-none h-24 resize-none leading-relaxed transition-all"
               ></textarea>
             </div>
 
@@ -252,16 +252,15 @@ export default function CarDetailsPage({ params: paramsPromise }) {
                 <p className="text-xs uppercase tracking-widest text-primary font-black">
                   Estimated Billing
                 </p>
-                <p className="text-[11px] text-gray-400 mt-0.5 font-medium">
-                  {rentalDays} Day(s){" "}
-                  {driverNeeded === "Yes" && "• Driver Service Addon"}
+                <p className="text-[11px] text-base-content/60 mt-0.5 font-medium">
+                  {rentalDays} Day(s) {driverNeeded === "Yes" && "• Driver Service Addon"}
                 </p>
               </div>
               <div className="text-right">
-                <span className="text-xs font-bold text-gray-400 block -mb-1">
+                <span className="text-xs font-bold text-base-content/60 block -mb-1">
                   Amount Due:
                 </span>
-                <span className="text-3xl font-black tracking-tight text-white drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">
+                <span className="text-3xl font-black tracking-tight text-base-content drop-shadow-[0_0_10px_rgba(59,130,246,0.2)]">
                   ${calculateTotalPrice()}
                 </span>
               </div>

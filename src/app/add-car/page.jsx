@@ -47,7 +47,7 @@ export default function AddCarPage() {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/cars", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/cars`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(carPayload),
@@ -81,32 +81,32 @@ export default function AddCarPage() {
 
   if (isPending || !session) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center bg-[#0b0f19]">
+      <div className="min-h-[80vh] flex items-center justify-center bg-base-100">
         <span className="loading loading-spinner loading-lg text-primary"></span>
       </div>
     );
   }
 
-  // Common styling for our glassmorphism text fields
+  // Common styling for our glassmorphism text fields (updated to dynamic, highly readable theme-aware styles)
   const inputClass =
-    "w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 shadow-inner";
+    "w-full bg-base-100 border border-base-content/15 rounded-xl px-4 py-3 text-base-content placeholder-base-content/30 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 shadow-inner";
 
   return (
-    <div className="min-h-screen bg-[#0b0f19] bg-gradient-to-br from-[#0b0f19] via-[#111827] to-[#0b0f19] py-12 px-4 sm:px-6 lg:px-8 text-white">
-      <div className="max-w-3xl mx-auto bg-white/[0.02] backdrop-blur-xl shadow-2xl rounded-3xl border border-white/10 p-6 sm:p-10 relative overflow-hidden">
+    <div className="min-h-screen bg-base-100 bg-gradient-to-br from-base-100 via-base-200 to-base-100 py-12 px-4 sm:px-6 lg:px-8 text-base-content">
+      <div className="max-w-3xl mx-auto bg-base-200/50 backdrop-blur-xl shadow-2xl rounded-3xl border border-base-content/10 p-6 sm:p-10 relative overflow-hidden">
         {/* Glow Effects Behind Form */}
         <div className="absolute -top-24 -left-24 w-48 h-48 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         {/* Header Block */}
-        <div className="mb-10 border-b border-white/5 pb-6 relative z-10">
-          <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
+        <div className="mb-10 border-b border-base-content/10 pb-6 relative z-10">
+          <h1 className="text-3xl font-black tracking-tight text-base-content sm:text-4xl">
             Add a New{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">
               Car Listing
             </span>
           </h1>
-          <p className="text-sm text-gray-400 mt-2">
+          <p className="text-sm text-base-content/70 mt-2">
             Fill out the operational metrics below to publish a vehicle listing
             under your fleet portfolio.
           </p>
@@ -117,7 +117,7 @@ export default function AddCarPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Field: Car Name */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">
+              <label className="text-xs font-bold uppercase tracking-widest text-base-content/70">
                 Car Name
               </label>
               <input
@@ -133,7 +133,7 @@ export default function AddCarPage() {
 
             {/* Field: Daily Rent Price */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">
+              <label className="text-xs font-bold uppercase tracking-widest text-base-content/70">
                 Daily Rent Price ($)
               </label>
               <input
@@ -152,7 +152,7 @@ export default function AddCarPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Field: Car Type */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">
+              <label className="text-xs font-bold uppercase tracking-widest text-base-content/70">
                 Car Type
               </label>
               <select
@@ -161,28 +161,28 @@ export default function AddCarPage() {
                 onChange={handleChange}
                 className={`${inputClass} appearance-none cursor-pointer`}
                 style={{
-                  backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
+                  backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "right 1rem center",
                   backgroundSize: "1em",
                 }}
               >
-                <option value="SUV" className="bg-[#111827]">
+                <option value="SUV" className="bg-base-200 text-base-content">
                   SUV
                 </option>
-                <option value="Sedan" className="bg-[#111827]">
+                <option value="Sedan" className="bg-base-200 text-base-content">
                   Sedan
                 </option>
-                <option value="Hatchback" className="bg-[#111827]">
+                <option value="Hatchback" className="bg-base-200 text-base-content">
                   Hatchback
                 </option>
-                <option value="Luxury" className="bg-[#111827]">
+                <option value="Luxury" className="bg-base-200 text-base-content">
                   Luxury
                 </option>
-                <option value="Crossover" className="bg-[#111827]">
+                <option value="Crossover" className="bg-base-200 text-base-content">
                   Crossover
                 </option>
-                <option value="Electric" className="bg-[#111827]">
+                <option value="Electric" className="bg-base-200 text-base-content">
                   Electric
                 </option>
               </select>
@@ -190,7 +190,7 @@ export default function AddCarPage() {
 
             {/* Field: Seat Capacity */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">
+              <label className="text-xs font-bold uppercase tracking-widest text-base-content/70">
                 Seat Capacity
               </label>
               <input
@@ -208,7 +208,7 @@ export default function AddCarPage() {
 
           {/* Field: Image URL */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-bold uppercase tracking-widest text-gray-400">
+            <label className="text-xs font-bold uppercase tracking-widest text-base-content/70">
               Image URL
             </label>
             <input
@@ -225,7 +225,7 @@ export default function AddCarPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Field: Pickup Location */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">
+              <label className="text-xs font-bold uppercase tracking-widest text-base-content/70">
                 Pickup Location
               </label>
               <input
@@ -241,7 +241,7 @@ export default function AddCarPage() {
 
             {/* Field: Availability Status */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-gray-400">
+              <label className="text-xs font-bold uppercase tracking-widest text-base-content/70">
                 Availability Status
               </label>
               <select
@@ -250,16 +250,16 @@ export default function AddCarPage() {
                 onChange={handleChange}
                 className={`${inputClass} appearance-none cursor-pointer`}
                 style={{
-                  backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
+                  backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "right 1rem center",
                   backgroundSize: "1em",
                 }}
               >
-                <option value="Available" className="bg-[#111827]">
+                <option value="Available" className="bg-base-200 text-base-content">
                   Available
                 </option>
-                <option value="Unavailable" className="bg-[#111827]">
+                <option value="Unavailable" className="bg-base-200 text-base-content">
                   Unavailable
                 </option>
               </select>
@@ -268,7 +268,7 @@ export default function AddCarPage() {
 
           {/* ⚠️ FIXED & STYLIZED CONTAINER: Explicit vertical stacking layout ensures 0% overlap */}
           <div className="flex flex-col gap-2 w-full">
-            <label className="text-xs font-bold uppercase tracking-widest text-gray-400">
+            <label className="text-xs font-bold uppercase tracking-widest text-base-content/70">
               Description
             </label>
             <textarea
@@ -276,7 +276,7 @@ export default function AddCarPage() {
               value={formData.description}
               onChange={handleChange}
               placeholder="Provide information detailing performance characteristics, special rules, or extra amenities included..."
-              className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 shadow-inner h-32 resize-none leading-relaxed"
+              className="w-full bg-base-100 border border-base-content/15 rounded-xl px-4 py-3 text-base-content placeholder-base-content/30 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 shadow-inner h-32 resize-none leading-relaxed"
               required
             ></textarea>
           </div>

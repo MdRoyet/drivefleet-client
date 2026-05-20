@@ -25,7 +25,7 @@ export default function AISearch() {
     setLoading(true);
     setSearched(true);
     try {
-      const response = await fetch("http://localhost:5000/api/cars/ai-search", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/cars/ai-search`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: queryText }),

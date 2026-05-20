@@ -1,7 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
-  reactCompiler: true,
+  reactStrictMode: true,
+  // ⚡ Add this native Next.js proxy rewrite:
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "https://drivefleet-server-beige.vercel.app/api/:path*",
+      },
+    ];
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig; // Or 'export default nextConfig' if using .mjs

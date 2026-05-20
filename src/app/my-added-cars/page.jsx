@@ -27,7 +27,7 @@ export default function MyAddedCarsPage() {
     if (!session?.user?.email) return;
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/cars");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/cars`);
       const result = await response.json();
 
       if (result.success) {
@@ -55,7 +55,7 @@ export default function MyAddedCarsPage() {
     if (!confirmation) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/cars/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/cars/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -83,7 +83,7 @@ export default function MyAddedCarsPage() {
       };
 
       const response = await fetch(
-        `http://localhost:5000/api/cars/${editCar._id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/cars/${editCar._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -114,24 +114,24 @@ export default function MyAddedCarsPage() {
 
   if (isPending || loading) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center bg-[#0b0f19]">
+      <div className="min-h-[80vh] flex items-center justify-center bg-base-100">
         <span className="loading loading-spinner loading-lg text-primary"></span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0b0f19] bg-gradient-to-br from-[#0b0f19] via-[#111827] to-[#0b0f19] py-12 px-4 sm:px-6 lg:px-8 text-white">
+    <div className="min-h-screen bg-base-100 bg-gradient-to-br from-base-100 via-base-200 to-base-100 py-12 px-4 sm:px-6 lg:px-8 text-base-content">
       <div className="max-w-7xl mx-auto">
         {/* Header Block Section */}
-        <div className="mb-10 border-b border-white/5 pb-6">
-          <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
+        <div className="mb-10 border-b border-base-content/10 pb-6">
+          <h1 className="text-3xl font-black tracking-tight text-base-content sm:text-4xl">
             My Added{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">
               Cars Manager
             </span>
           </h1>
-          <p className="text-sm text-gray-400 mt-2">
+          <p className="text-sm text-base-content/70 mt-2">
             Supervise, update pricing parameters, or withdraw fleet entries you
             have published under your account profile.
           </p>
@@ -139,11 +139,11 @@ export default function MyAddedCarsPage() {
 
         {/* Inventory Matrix Display Grid */}
         {cars.length === 0 ? (
-          <div className="text-center py-20 bg-white/[0.01] border border-dashed border-white/10 rounded-3xl">
-            <p className="text-xl font-bold text-gray-400">
+          <div className="text-center py-20 bg-base-200/30 border border-dashed border-base-content/10 rounded-3xl">
+            <p className="text-xl font-bold text-base-content/50">
               No managed listings identified
             </p>
-            <p className="text-xs text-gray-600 mt-1">
+            <p className="text-xs text-base-content/30 mt-1">
               Vehicles you publish inside the "Add Car" link interface appear
               here.
             </p>
@@ -153,29 +153,18 @@ export default function MyAddedCarsPage() {
             {cars.map((car) => (
               <div
                 key={car._id}
-                className="bg-white/[0.02] border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex flex-col justify-between"
+                className="bg-base-200/50 border border-base-content/10 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between"
               >
                 <div>
-                  <div className="w-full h-48 relative bg-white/5">
+                  <div className="w-full h-48 relative bg-base-300/30">
                     <img
                       src={car.imageUrl}
                       alt={car.carName}
                       className="w-full h-full object-cover"
                     />
-                    {/* CHANGE THE OLD WEAK-CONTRAST TAG INSIDE MY ADDED CARS: */}
+                    {/* Modern solid high-contrast theme-aligned badge system */}
                     <span
-                      className={`absolute top-4 right-4 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full ${
-                        car.availabilityStatus === "Available"
-                          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                          : "bg-rose-500/20 text-rose-400 border border-rose-500/30"
-                      }`}
-                    >
-                      {car.availabilityStatus}
-                    </span>
-
-                    {/* TO THIS IMMACULATE SOLID CONFIGURATION: */}
-                    <span
-                      className={`absolute top-4 right-4 text-xs font-black uppercase tracking-widest px-3.5 py-1 rounded-full shadow-xl border z-20 ${
+                      className={`absolute top-4 right-4 text-xs font-black uppercase tracking-widest px-3.5 py-1 rounded-full shadow-lg border z-20 ${
                         car.availabilityStatus === "Available"
                           ? "bg-emerald-600 text-white border-emerald-500"
                           : "bg-rose-600 text-white border-rose-500"
@@ -187,29 +176,29 @@ export default function MyAddedCarsPage() {
 
                   <div className="p-6">
                     <div className="flex justify-between items-start gap-2">
-                      <h2 className="text-xl font-black text-white truncate">
+                      <h2 className="text-xl font-black text-base-content truncate">
                         {car.carName}
                       </h2>
-                      <span className="text-[10px] bg-white/5 px-2.5 py-1 rounded-md text-gray-400 font-bold border border-white/5 uppercase">
+                      <span className="text-[10px] bg-base-300 px-2.5 py-1 rounded-md text-base-content/70 font-bold border border-base-content/10 uppercase">
                         {car.carType}
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 text-xs text-gray-400 mt-4 pt-3 border-t border-white/5">
+                    <div className="grid grid-cols-2 gap-2 text-xs text-base-content/70 mt-4 pt-3 border-t border-base-content/10">
                       <p>
                         💰 Price:{" "}
-                        <span className="text-white font-bold">
+                        <span className="text-base-content font-bold">
                           ${car.dailyPrice}/day
                         </span>
                       </p>
                       <p className="text-right">
                         👥 Capacity:{" "}
-                        <span className="text-white font-bold">
+                        <span className="text-base-content font-bold">
                           {car.seatCapacity} Seats
                         </span>
                       </p>
                     </div>
-                    <p className="text-xs text-gray-500 truncate mt-3">
+                    <p className="text-xs text-base-content/50 truncate mt-3">
                       📍 Location: {car.pickupLocation}
                     </p>
                   </div>
@@ -237,11 +226,11 @@ export default function MyAddedCarsPage() {
         {/* 🛠️ UPDATED INLINE EDITING MODAL LAYER */}
         {editCar && (
           <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-[200]">
-            <div className="bg-[#111827] border border-white/10 w-full max-w-xl rounded-3xl p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-              <h3 className="text-2xl font-black mb-1">
+            <div className="bg-base-200 border border-base-content/10 w-full max-w-xl rounded-3xl p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto text-base-content">
+              <h3 className="text-2xl font-black mb-1 text-base-content">
                 Update <span className="text-primary">Vehicle Metrics</span>
               </h3>
-              <p className="text-xs text-gray-400 mb-6">
+              <p className="text-xs text-base-content/70 mb-6">
                 Modify any parameters of your car listing below.
               </p>
 
@@ -249,7 +238,7 @@ export default function MyAddedCarsPage() {
                 {/* Row 1: Car Name & Car Type */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase tracking-wider font-bold text-gray-400">
+                    <label className="text-[10px] uppercase tracking-wider font-bold text-base-content/65">
                       Car Model Name
                     </label>
                     <input
@@ -257,37 +246,43 @@ export default function MyAddedCarsPage() {
                       name="carName"
                       value={editCar.carName}
                       onChange={handleModalInputChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+                      className="w-full bg-base-100/50 border border-base-content/15 rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:outline-none text-base-content"
                       required
                     />
                   </div>
                   {/* 🆕 Field Added: Car Type */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase tracking-wider font-bold text-gray-400">
+                    <label className="text-[10px] uppercase tracking-wider font-bold text-base-content/65">
                       Car Type
                     </label>
                     <select
                       name="carType"
                       value={editCar.carType || "SUV"}
                       onChange={handleModalInputChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:outline-none cursor-pointer"
+                      className="w-full bg-base-100/50 border border-base-content/15 rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:outline-none cursor-pointer text-base-content appearance-none"
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "right 1rem center",
+                        backgroundSize: "1em",
+                      }}
                     >
-                      <option value="SUV" className="bg-[#111827]">
+                      <option value="SUV" className="bg-base-200 text-base-content">
                         SUV
                       </option>
-                      <option value="Sedan" className="bg-[#111827]">
+                      <option value="Sedan" className="bg-base-200 text-base-content">
                         Sedan
                       </option>
-                      <option value="Hatchback" className="bg-[#111827]">
+                      <option value="Hatchback" className="bg-base-200 text-base-content">
                         Hatchback
                       </option>
-                      <option value="Luxury" className="bg-[#111827]">
+                      <option value="Luxury" className="bg-base-200 text-base-content">
                         Luxury
                       </option>
-                      <option value="Crossover" className="bg-[#111827]">
+                      <option value="Crossover" className="bg-base-200 text-base-content">
                         Crossover
                       </option>
-                      <option value="Electric" className="bg-[#111827]">
+                      <option value="Electric" className="bg-base-200 text-base-content">
                         Electric
                       </option>
                     </select>
@@ -297,7 +292,7 @@ export default function MyAddedCarsPage() {
                 {/* Row 2: Price & Seat Capacity */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase tracking-wider font-bold text-gray-400">
+                    <label className="text-[10px] uppercase tracking-wider font-bold text-base-content/65">
                       Daily Rental Price ($)
                     </label>
                     <input
@@ -305,12 +300,12 @@ export default function MyAddedCarsPage() {
                       name="dailyPrice"
                       value={editCar.dailyPrice}
                       onChange={handleModalInputChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+                      className="w-full bg-base-100/50 border border-base-content/15 rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:outline-none text-base-content"
                       required
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase tracking-wider font-bold text-gray-400">
+                    <label className="text-[10px] uppercase tracking-wider font-bold text-base-content/65">
                       Seat Capacity
                     </label>
                     <input
@@ -318,7 +313,7 @@ export default function MyAddedCarsPage() {
                       name="seatCapacity"
                       value={editCar.seatCapacity}
                       onChange={handleModalInputChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+                      className="w-full bg-base-100/50 border border-base-content/15 rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:outline-none text-base-content"
                       required
                     />
                   </div>
@@ -327,7 +322,7 @@ export default function MyAddedCarsPage() {
                 {/* Row 3: Pickup Location & Availability */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase tracking-wider font-bold text-gray-400">
+                    <label className="text-[10px] uppercase tracking-wider font-bold text-base-content/65">
                       Pickup Location
                     </label>
                     <input
@@ -335,24 +330,30 @@ export default function MyAddedCarsPage() {
                       name="pickupLocation"
                       value={editCar.pickupLocation}
                       onChange={handleModalInputChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+                      className="w-full bg-base-100/50 border border-base-content/15 rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:outline-none text-base-content"
                       required
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase tracking-wider font-bold text-gray-400">
+                    <label className="text-[10px] uppercase tracking-wider font-bold text-base-content/65">
                       Availability Status
                     </label>
                     <select
                       name="availabilityStatus"
                       value={editCar.availabilityStatus}
                       onChange={handleModalInputChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:outline-none cursor-pointer"
+                      className="w-full bg-base-100/50 border border-base-content/15 rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:outline-none cursor-pointer text-base-content appearance-none"
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "right 1rem center",
+                        backgroundSize: "1em",
+                      }}
                     >
-                      <option value="Available" className="bg-[#111827]">
+                      <option value="Available" className="bg-base-200 text-base-content">
                         Available
                       </option>
-                      <option value="Unavailable" className="bg-[#111827]">
+                      <option value="Unavailable" className="bg-base-200 text-base-content">
                         Unavailable
                       </option>
                     </select>
@@ -361,7 +362,7 @@ export default function MyAddedCarsPage() {
 
                 {/* 🆕 Row 4 Field Added: Image URL */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] uppercase tracking-wider font-bold text-gray-400">
+                  <label className="text-[10px] uppercase tracking-wider font-bold text-base-content/65">
                     Image URL
                   </label>
                   <input
@@ -369,31 +370,31 @@ export default function MyAddedCarsPage() {
                     name="imageUrl"
                     value={editCar.imageUrl || ""}
                     onChange={handleModalInputChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+                    className="w-full bg-base-100/50 border border-base-content/15 rounded-xl px-4 py-2.5 text-sm focus:border-primary focus:outline-none text-base-content"
                     required
                   />
                 </div>
 
                 {/* Row 5: Description */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] uppercase tracking-wider font-bold text-gray-400">
+                  <label className="text-[10px] uppercase tracking-wider font-bold text-base-content/65">
                     Listing Description
                   </label>
                   <textarea
                     name="description"
                     value={editCar.description}
                     onChange={handleModalInputChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm h-24 resize-none focus:border-primary focus:outline-none"
+                    className="w-full bg-base-100/50 border border-base-content/15 rounded-xl px-4 py-2.5 text-sm h-24 resize-none focus:border-primary focus:outline-none text-base-content"
                     required
                   ></textarea>
                 </div>
 
                 {/* Modal Controller Actions */}
-                <div className="flex justify-end gap-3 pt-4 border-t border-white/5">
+                <div className="flex justify-end gap-3 pt-4 border-t border-base-content/10">
                   <button
                     type="button"
                     onClick={() => setEditCar(null)}
-                    className="btn btn-ghost btn-sm rounded-xl normal-case px-4"
+                    className="btn btn-ghost btn-sm rounded-xl normal-case px-4 text-base-content/60"
                   >
                     Cancel
                   </button>

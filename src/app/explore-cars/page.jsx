@@ -11,6 +11,7 @@ export default function ExploreCarsPage() {
   // Real-time filtering states connected to your backend query parameters
   const [search, setSearch] = useState("");
   const [carType, setCarType] = useState("");
+  const [sortBy, setSortBy] = useState("");
 
   // Fetch cars from backend whenever search query or type changes
   useEffect(() => {
@@ -23,7 +24,7 @@ export default function ExploreCarsPage() {
         if (carType) queryParams.append("carType", carType);
 
         const response = await fetch(
-          `http://localhost:5000/api/cars?${queryParams.toString()}`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/cars?${queryParams.toString()}`,
         );
         const result = await response.json();
 
@@ -45,29 +46,49 @@ export default function ExploreCarsPage() {
     return () => clearTimeout(delayDebounceFn);
   }, [search, carType]);
 
+  // Dynamic sorting engine for price, seats, and bookings
+  const sortedCars = [...cars].sort((a, b) => {
+    if (sortBy === "price-asc") {
+      return a.dailyPrice - b.dailyPrice;
+    }
+    if (sortBy === "price-desc") {
+      return b.dailyPrice - a.dailyPrice;
+    }
+    if (sortBy === "seats-desc") {
+      return b.seatCapacity - a.seatCapacity;
+    }
+    if (sortBy === "seats-asc") {
+      return a.seatCapacity - b.seatCapacity;
+    }
+    if (sortBy === "bookings-desc") {
+      return (b.booking_count || 0) - (a.booking_count || 0);
+    }
+    return 0; // Default: preserve original database order
+  });
+
   if (loading) {
     return <LoadingSpinner message="Querying active fleet entries..." />;
   }
 
   return (
-    <div className="min-h-screen bg-[#0b0f19] bg-gradient-to-br from-[#0b0f19] via-[#111827] to-[#0b0f19] py-12 px-4 sm:px-6 lg:px-8 text-white">
+    <div className="min-h-screen bg-base-100 bg-gradient-to-br from-base-100 via-base-200 to-base-100 py-12 px-4 sm:px-6 lg:px-8 text-base-content">
       <div className="max-w-7xl mx-auto">
         {/* Header Block Section */}
-        <div className="text-center md:text-left mb-10 border-b border-white/5 pb-6">
-          <h1 className="text-4xl font-black tracking-tight text-white">
+        <div className="text-center md:text-left mb-10 border-b border-base-content/10 pb-6">
+          <h1 className="text-4xl font-black tracking-tight text-base-content">
             Explore Our{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">
               Premium Fleet
             </span>
           </h1>
-          <p className="text-sm text-gray-400 mt-2 max-w-xl">
+          <p className="text-sm text-base-content/70 mt-2 max-w-xl">
             Browse, filter, and lock in bookings for high-performance vehicles
             across standard, utility, and electric divisions.
           </p>
         </div>
 
         {/* 🛠️ Live Filter & Query Controls Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10 bg-white/[0.02] border border-white/5 backdrop-blur-md p-4 rounded-2xl shadow-xl">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10 bg-base-200/50 border border-base-content/10 backdrop-blur-md p-4 rounded-2xl shadow-xl">
           {/* Input: Text Search */}
           <div className="md:col-span-2">
             <input
@@ -75,7 +96,7 @@ export default function ExploreCarsPage() {
               placeholder="Search by car model name... (e.g. Tesla)"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
+              className="w-full bg-base-100 border border-base-content/15 rounded-xl px-4 py-3 text-base-content placeholder-base-content/30 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
             />
           </div>
           {/* Select: Dropdown Classification */}
@@ -83,31 +104,64 @@ export default function ExploreCarsPage() {
             <select
               value={carType}
               onChange={(e) => setCarType(e.target.value)}
-              className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary transition-all cursor-pointer appearance-none"
+              className="w-full bg-base-100 border border-base-content/15 rounded-xl px-4 py-3 text-base-content focus:outline-none focus:border-primary transition-all cursor-pointer appearance-none"
               style={{
-                backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
+                backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "right 1rem center",
                 backgroundSize: "1em",
               }}
             >
-              <option value="" className="bg-[#111827]">
+              <option value="" className="bg-base-200 text-base-content">
                 All Categories
               </option>
-              <option value="SUV" className="bg-[#111827]">
+              <option value="SUV" className="bg-base-200 text-base-content">
                 SUV
               </option>
-              <option value="Sedan" className="bg-[#111827]">
+              <option value="Sedan" className="bg-base-200 text-base-content">
                 Sedan
               </option>
-              <option value="Hatchback" className="bg-[#111827]">
+              <option value="Hatchback" className="bg-base-200 text-base-content">
                 Hatchback
               </option>
-              <option value="Luxury" className="bg-[#111827]">
+              <option value="Luxury" className="bg-base-200 text-base-content">
                 Luxury
               </option>
-              <option value="Electric" className="bg-[#111827]">
+              <option value="Electric" className="bg-base-200 text-base-content">
                 Electric
+              </option>
+            </select>
+          </div>
+          {/* Select: Dropdown Sorting */}
+          <div>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="w-full bg-base-100 border border-base-content/15 rounded-xl px-4 py-3 text-base-content focus:outline-none focus:border-primary transition-all cursor-pointer appearance-none font-medium"
+              style={{
+                backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "right 1rem center",
+                backgroundSize: "1em",
+              }}
+            >
+              <option value="" className="bg-base-200 text-base-content">
+                Sort By: Default
+              </option>
+              <option value="price-asc" className="bg-base-200 text-base-content">
+                Price: Low to High
+              </option>
+              <option value="price-desc" className="bg-base-200 text-base-content">
+                Price: High to Low
+              </option>
+              <option value="seats-desc" className="bg-base-200 text-base-content">
+                Seats: High to Low
+              </option>
+              <option value="seats-asc" className="bg-base-200 text-base-content">
+                Seats: Low to High
+              </option>
+              <option value="bookings-desc" className="bg-base-200 text-base-content">
+                Bookings: Most Popular
               </option>
             </select>
           </div>
@@ -118,48 +172,35 @@ export default function ExploreCarsPage() {
           /* Loading Core Grid Skeleton Frame */
           <div className="flex flex-col items-center justify-center min-h-[40vh]">
             <span className="loading loading-spinner loading-lg text-primary mb-2"></span>
-            <p className="text-xs text-gray-500 font-medium tracking-wider uppercase">
+            <p className="text-xs text-base-content/50 font-medium tracking-wider uppercase">
               Querying active fleet entries...
             </p>
           </div>
-        ) : cars.length === 0 ? (
+        ) : sortedCars.length === 0 ? (
           /* Empty Database Return Result Context Boundary */
-          <div className="text-center py-20 bg-white/[0.01] border border-dashed border-white/10 rounded-3xl">
-            <p className="text-xl font-bold text-gray-400">
+          <div className="text-center py-20 bg-base-200/30 border border-dashed border-base-content/10 rounded-3xl">
+            <p className="text-xl font-bold text-base-content/50">
               No vehicle profiles identified
             </p>
-            <p className="text-xs text-gray-600 mt-1">
+            <p className="text-xs text-base-content/30 mt-1">
               Try relaxing your search terms or filter selection parameters.
             </p>
           </div>
         ) : (
           /* Render Active Responsive Data Matrix Grid Layout */
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {cars.map((car) => {
+            {sortedCars.map((car) => {
               const isAvailable = car.availabilityStatus === "Available";
 
               return (
                 <div
                   key={car._id}
-                  className="group bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex flex-col hover:border-primary/40 hover:scale-[1.01] transition-all duration-300 relative"
+                  className="group bg-base-200/50 backdrop-blur-xl border border-base-content/10 rounded-2xl overflow-hidden shadow-xl flex flex-col hover:border-primary/40 hover:scale-[1.01] transition-all duration-300 relative"
                 >
-                  {/* CHANGE THE OLD SEMI-TRANSPARENT BADGE INSIDE EXPLORE CARS: */}
+                  {/* Modern solid high-contrast badge system */}
                   <div className="absolute top-4 right-4 z-20">
                     <span
-                      className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-md backdrop-blur-md ${
-                        isAvailable
-                          ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                          : "bg-rose-500/15 text-rose-400 border border-rose-500/30"
-                      }`}
-                    >
-                      {car.availabilityStatus}
-                    </span>
-                  </div>
-
-                  {/* TO THIS SOLID HIGH-CONTRAST BADGE SYSTEM: */}
-                  <div className="absolute top-4 right-4 z-20">
-                    <span
-                      className={`text-xs font-black uppercase tracking-widest px-3.5 py-1 rounded-full shadow-xl border ${
+                      className={`text-xs font-black uppercase tracking-widest px-3.5 py-1 rounded-full shadow-lg border ${
                         isAvailable
                           ? "bg-emerald-600 text-white border-emerald-500"
                           : "bg-rose-600 text-white border-rose-500"
@@ -170,7 +211,7 @@ export default function ExploreCarsPage() {
                   </div>
 
                   {/* Header Image Frame Preview */}
-                  <div className="w-full h-52 relative overflow-hidden bg-white/5 border-b border-white/5">
+                  <div className="w-full h-52 relative overflow-hidden bg-base-300/30 border-b border-base-content/10">
                     <img
                       src={
                         car.imageUrl ||
@@ -190,37 +231,37 @@ export default function ExploreCarsPage() {
                     <div>
                       {/* Name & Type Tag Heading row */}
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <h2 className="text-xl font-black text-white group-hover:text-primary transition-colors truncate">
+                        <h2 className="text-xl font-black text-base-content group-hover:text-primary transition-colors truncate">
                           {car.carName}
                         </h2>
-                        <span className="text-[10px] bg-white/5 px-2.5 py-1 rounded-md text-gray-400 font-bold border border-white/5 uppercase">
+                        <span className="text-[10px] bg-base-300 px-2.5 py-1 rounded-md text-base-content/70 font-bold border border-base-content/10 uppercase">
                           {car.carType}
                         </span>
                       </div>
 
                       {/* Displaying Core Metrics Breakdown parameters */}
-                      <div className="grid grid-cols-2 gap-y-3 gap-x-2 text-xs text-gray-400 font-medium my-4 border-y border-white/5 py-3">
+                      <div className="grid grid-cols-2 gap-y-3 gap-x-2 text-xs text-base-content/70 font-medium my-4 border-y border-base-content/10 py-3">
                         <div className="flex items-center gap-1.5 truncate">
                           📍{" "}
-                          <span className="truncate text-gray-300">
+                          <span className="truncate text-base-content/85">
                             {car.pickupLocation}
                           </span>
                         </div>
                         <div className="flex items-center gap-1.5 justify-end">
                           👥{" "}
-                          <span className="text-gray-300">
+                          <span className="text-base-content/85">
                             {car.seatCapacity} Seats
                           </span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           📊{" "}
-                          <span className="text-gray-300">
+                          <span className="text-base-content/85">
                             {car.booking_count || 0} Bookings
                           </span>
                         </div>
                         <div className="flex items-center gap-1.5 justify-end">
                           💰{" "}
-                          <span className="text-white font-bold">
+                          <span className="text-base-content font-bold">
                             ${car.dailyPrice}
                           </span>
                           /day
@@ -228,7 +269,7 @@ export default function ExploreCarsPage() {
                       </div>
 
                       {/* Snippet Paragraph Excerpt description bounding */}
-                      <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed mb-6">
+                      <p className="text-xs text-base-content/60 line-clamp-2 leading-relaxed mb-6">
                         {car.description}
                       </p>
                     </div>
@@ -237,7 +278,7 @@ export default function ExploreCarsPage() {
                     <div>
                       <Link
                         href={`/cars/${car._id}`}
-                        className="w-full bg-white/5 hover:bg-gradient-to-r hover:from-primary hover:to-purple-600 border border-white/10 hover:border-none text-white font-bold text-xs uppercase tracking-wider py-3 rounded-xl flex items-center justify-center transition-all duration-200 shadow-md transform active:scale-[0.99]"
+                        className="w-full bg-base-300/50 hover:bg-gradient-to-r hover:from-primary hover:to-purple-600 border border-base-content/10 hover:border-none text-base-content hover:text-white font-bold text-xs uppercase tracking-wider py-3 rounded-xl flex items-center justify-center transition-all duration-200 shadow-md transform active:scale-[0.99]"
                       >
                         View Details
                       </Link>

@@ -26,7 +26,7 @@ export default function MyBookingsPage() {
     if (!session?.user?.email) return;
     try {
       const response = await fetch(
-        `http://localhost:5000/api/my-bookings?email=${session.user.email}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/my-bookings?email=${session.user.email}`,
         {
           credentials: "include",
         },
@@ -57,7 +57,7 @@ export default function MyBookingsPage() {
     setCancelSubmitLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/bookings/${cancellingBooking._id}/cancel`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookings/${cancellingBooking._id}/cancel`,
         {
           method: "PATCH",
           credentials: "include",
@@ -103,24 +103,24 @@ export default function MyBookingsPage() {
 
   if (isPending || loading) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center bg-[#0b0f19]">
+      <div className="min-h-[80vh] flex items-center justify-center bg-base-100">
         <span className="loading loading-spinner loading-lg text-primary"></span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0b0f19] bg-gradient-to-br from-[#0b0f19] via-[#0f172a] to-[#0b0f19] py-12 px-4 sm:px-6 lg:px-8 text-white">
+    <div className="min-h-screen bg-base-100 bg-gradient-to-br from-base-100 via-base-200 to-base-100 py-12 px-4 sm:px-6 lg:px-8 text-base-content">
       <div className="max-w-5xl mx-auto">
         {/* Header Block Section */}
-        <div className="mb-10 border-b border-white/5 pb-6">
-          <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
+        <div className="mb-10 border-b border-base-content/10 pb-6">
+          <h1 className="text-3xl font-black tracking-tight text-base-content sm:text-4xl">
             My Bookings{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">
               Ledger
             </span>
           </h1>
-          <p className="text-sm text-gray-400 mt-2">
+          <p className="text-sm text-base-content/70 mt-2">
             Review live transaction receipts, booking schedules, or manage
             reservation cancellation procedures.
           </p>
@@ -128,11 +128,11 @@ export default function MyBookingsPage() {
 
         {/* Presentation Grid List */}
         {bookings.length === 0 ? (
-          <div className="text-center py-20 bg-white/[0.01] border border-dashed border-white/10 rounded-3xl">
-            <p className="text-xl font-bold text-gray-400">
+          <div className="text-center py-20 bg-base-200/30 border border-dashed border-base-content/10 rounded-3xl">
+            <p className="text-xl font-bold text-base-content/60">
               No active bookings identified
             </p>
-            <p className="text-xs text-gray-600 mt-1">
+            <p className="text-xs text-base-content/40 mt-1">
               Browse our public fleet selection directory to schedule your first
               reservation entry.
             </p>
@@ -155,14 +155,14 @@ export default function MyBookingsPage() {
               return (
                 <div
                   key={booking._id}
-                  className={`bg-gradient-to-r from-[#131c30] to-[#1e293b] border-2 rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row items-stretch transition-all duration-300 relative ${
+                  className={`bg-gradient-to-r from-base-200 to-base-300/80 border-2 rounded-2xl overflow-hidden shadow-xl flex flex-col md:flex-row items-stretch transition-all duration-300 relative ${
                     isCancelled
                       ? "border-rose-500/20 opacity-80"
-                      : "border-white/5 hover:border-primary/40"
+                      : "border-base-content/5 hover:border-primary/40"
                   }`}
                 >
                   {/* Left Side: Thumbnail Preview */}
-                  <div className="w-full md:w-56 h-44 md:h-auto bg-black/20 flex-shrink-0 relative border-b md:border-b-0 md:border-r border-white/5">
+                  <div className="w-full md:w-56 h-44 md:h-auto bg-base-300/40 flex-shrink-0 relative border-b md:border-b-0 md:border-r border-base-content/10">
                     <img
                       src={booking.imageUrl}
                       alt={booking.carName}
@@ -175,7 +175,7 @@ export default function MyBookingsPage() {
                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                       <div className="space-y-2 max-w-md">
                         <div className="flex items-center gap-3 flex-wrap">
-                          <h3 className="text-xl font-black tracking-tight text-white">
+                          <h3 className="text-xl font-black tracking-tight text-base-content">
                             {booking.carName}
                           </h3>
 
@@ -190,16 +190,16 @@ export default function MyBookingsPage() {
                           </span>
                         </div>
 
-                        <p className="text-xs text-gray-400 font-semibold flex items-center gap-1.5">
+                        <p className="text-xs text-base-content/70 font-semibold flex items-center gap-1.5">
                           {isCancelled
                             ? "❌ Cancelled Transaction Date:"
                             : "📆 Reservation Date:"}
-                          <span className="text-gray-200 font-bold">
+                          <span className="text-base-content font-bold">
                             {formattedDate}
                           </span>
                         </p>
 
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-300 pt-3 border-t border-white/5 font-medium">
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-base-content/80 pt-3 border-t border-base-content/10 font-medium">
                           <p>
                             ⏱️ Rental Frame:{" "}
                             <span className="text-primary font-black">
@@ -211,15 +211,15 @@ export default function MyBookingsPage() {
                             <span
                               className={
                                 booking.driverNeeded === "Yes"
-                                  ? "text-purple-400 font-black"
-                                  : "text-gray-500 font-bold"
+                                  ? "text-purple-500 font-black"
+                                  : "text-base-content/40 font-bold"
                               }
                             >
                               {booking.driverNeeded}
                             </span>
                           </p>
                           {booking.specialNote && (
-                            <p className="col-span-2 text-[11px] text-gray-400 bg-black/20 px-3 py-2 rounded-xl mt-2 border border-white/5 truncate font-normal italic">
+                            <p className="col-span-2 text-[11px] text-base-content/70 bg-base-300/30 px-3 py-2 rounded-xl mt-2 border border-base-content/10 truncate font-normal italic">
                               "{booking.specialNote}"
                             </p>
                           )}
@@ -246,11 +246,11 @@ export default function MyBookingsPage() {
 
                     {/* Cost / Refund Summaries */}
                     {!isCancelled ? (
-                      <div className="bg-black/30 border-2 border-white/10 px-6 py-3.5 rounded-xl flex items-center justify-between shadow-inner">
+                      <div className="bg-base-300/30 border-2 border-base-content/10 px-6 py-3.5 rounded-xl flex items-center justify-between shadow-inner">
                         <span className="text-[10px] text-primary font-black uppercase tracking-widest">
                           Net Cost
                         </span>
-                        <span className="text-2xl font-black text-white">
+                        <span className="text-2xl font-black text-base-content">
                           ${booking.totalPrice}
                         </span>
                       </div>
@@ -260,7 +260,7 @@ export default function MyBookingsPage() {
                           <p className="text-[10px] text-rose-400 font-black uppercase tracking-widest flex items-center gap-1">
                             💰 Automatic Refund Issued
                           </p>
-                          <p className="text-[11px] text-gray-400 font-normal mt-0.5">
+                          <p className="text-[11px] text-base-content/60 font-normal mt-0.5">
                             Credited back to account wallet ledger
                           </p>
                         </div>
@@ -281,13 +281,13 @@ export default function MyBookingsPage() {
         {/* 🛠️ NEW: HIGH-CONTRAST INTERACTIVE CANCELLATION FORM MODAL */}
         {cancellingBooking && (
           <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-[250] animate-fade-in">
-            <div className="bg-[#111827] border-2 border-rose-500/30 w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+            <div className="bg-base-200 border-2 border-rose-500/30 w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden text-base-content">
               {/* Top ambient alarming decorative red glow spot */}
               <div className="absolute top-0 right-0 w-24 h-24 bg-rose-500/10 rounded-full blur-2xl pointer-events-none"></div>
 
               <div className="mb-4 text-center sm:text-left">
                 <span className="text-2xl mb-1 block">⚠️</span>
-                <h3 className="text-xl font-black text-white">
+                <h3 className="text-xl font-black text-base-content">
                   Cancel Reservation for{" "}
                   <span className="text-rose-400">
                     {cancellingBooking.carName}
@@ -297,14 +297,14 @@ export default function MyBookingsPage() {
               </div>
 
               {/* 📖 REFUND POLICY DETAIL SUMMARY TEXT BOX BOX */}
-              <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 my-4 space-y-2 text-xs leading-relaxed text-gray-300">
+              <div className="bg-base-300/30 border border-base-content/10 rounded-2xl p-4 my-4 space-y-2 text-xs leading-relaxed text-base-content/85">
                 <p className="font-bold uppercase tracking-wider text-rose-400 text-[10px]">
                   Official Fleet Refund Policy:
                 </p>
-                <ul className="list-disc list-inside space-y-1 text-gray-400">
+                <ul className="list-disc list-inside space-y-1 text-base-content/70">
                   <li>
                     A full 100% refund value of{" "}
-                    <span className="text-white font-bold">
+                    <span className="text-base-content font-bold">
                       ${cancellingBooking.totalPrice}
                     </span>{" "}
                     will be instantly reversed.
@@ -326,17 +326,17 @@ export default function MyBookingsPage() {
 
               {/* Action Form Confirmation Pipeline wrapper */}
               <form onSubmit={executeCancellation} className="space-y-4 pt-2">
-                <p className="text-xs text-gray-400 text-center sm:text-left">
+                <p className="text-xs text-base-content/70 text-center sm:text-left">
                   Are you certain you want to release this vehicle configuration
                   slot?
                 </p>
 
-                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/5">
+                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-base-content/10">
                   <button
                     type="button"
                     onClick={() => setCancellingBooking(null)}
                     disabled={cancelSubmitLoading}
-                    className="btn btn-ghost btn-sm rounded-xl normal-case h-11 min-h-0 text-gray-400 hover:bg-white/5 font-medium"
+                    className="btn btn-ghost btn-sm rounded-xl normal-case h-11 min-h-0 text-base-content/60 hover:bg-base-300 font-medium"
                   >
                     Keep Booking
                   </button>
