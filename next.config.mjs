@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // ⚡ Add this native Next.js proxy rewrite:
   async rewrites() {
     return [
       {
@@ -12,4 +11,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig; // Or 'export default nextConfig' if using .mjs
+export default nextConfig;
