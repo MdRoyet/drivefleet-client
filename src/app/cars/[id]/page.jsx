@@ -6,7 +6,6 @@ import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
 export default function CarDetailsPage({ params: paramsPromise }) {
-  // Unwrap the dynamic route params safely
   const params = use(paramsPromise);
   const router = useRouter();
   const { data: session } = authClient.useSession();
@@ -15,7 +14,6 @@ export default function CarDetailsPage({ params: paramsPromise }) {
   const [loading, setLoading] = useState(true);
   const [bookingLoading, setBookingLoading] = useState(false);
 
-  // Booking specific form input states
   const [driverNeeded, setDriverNeeded] = useState("No");
   const [specialNote, setSpecialNote] = useState("");
   const [rentalDays, setRentalDays] = useState(1);
@@ -41,24 +39,20 @@ export default function CarDetailsPage({ params: paramsPromise }) {
     fetchCarDetails();
   }, [params.id]);
 
-  // Dynamic cost aggregation logic helper
   const calculateTotalPrice = () => {
     if (!car) return 0;
     const baseCost = car.dailyPrice * rentalDays;
-    const driverSurcharge = driverNeeded === "Yes" ? 25 * rentalDays : 0; // Flat $25/day driver addition fee
+    const driverSurcharge = driverNeeded === "Yes" ? 25 * rentalDays : 0;
     return baseCost + driverSurcharge;
   };
 
   const handleBookingSubmit = async (e) => {
     e.preventDefault();
-
-    // Verification check: force login execution loop if anonymous clicks submit
     if (!session) {
       toast.error("You must be logged in to execute a vehicle booking.");
       router.push("/login");
       return;
     }
-
     if (car.availabilityStatus !== "Available") {
       toast.error("This vehicle is currently un-operational or checked out.");
       return;
@@ -77,7 +71,6 @@ export default function CarDetailsPage({ params: paramsPromise }) {
       rentalDays: parseInt(rentalDays, 10),
       totalPrice: calculateTotalPrice(),
       userEmail: session.user.email,
-      // Explore new Date() handling to format timestamps cleanly for standard UI presentation
       bookingDate: new Date().toISOString(),
       status: "Confirmed",
     };
@@ -87,21 +80,18 @@ export default function CarDetailsPage({ params: paramsPromise }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bookingPayload),
-        credentials: "include", // Carries cookie payload to verify ownership layers
+        credentials: "include",
       });
-
       const result = await response.json();
 
       if (result.success) {
         toast.success(`Reservation locked in for ${car.carName}!`);
         router.push("/my-bookings");
       } else {
-        toast.error(
-          result.message || "Booking sequence rejected by server node.",
-        );
+        toast.error(result.message || "Booking sequence rejected.");
       }
     } catch (error) {
-      toast.error("Transaction communication interface failure.");
+      toast.error("Transaction interface failure.");
     } finally {
       setBookingLoading(false);
     }
@@ -115,20 +105,12 @@ export default function CarDetailsPage({ params: paramsPromise }) {
     );
   }
 
-  if (!car) {
-    return (
-      <div className="min-h-[80vh] flex items-center justify-center bg-[#0b0f19] text-gray-400">
-        <p>Target vehicle configuration profile does not exist.</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-[#0b0f19] bg-gradient-to-br from-[#0b0f19] via-[#111827] to-[#0b0f19] py-12 px-4 sm:px-6 lg:px-8 text-white">
+    <div className="min-h-screen bg-[#0b0f19] bg-gradient-to-br from-[#0b0f19] via-[#0f172a] to-[#0b0f19] py-12 px-4 sm:px-6 lg:px-8 text-white">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* LEFT COLUMN: Visual Showcase and Metadata specifications Display card */}
-        <div className="lg:col-span-7 bg-white/[0.02] border border-white/10 backdrop-blur-xl p-6 rounded-3xl space-y-6">
-          <div className="w-full h-72 sm:h-96 rounded-2xl overflow-hidden bg-white/5 relative">
+        {/* Left Side: Car Profile Details Visual Layout */}
+        <div className="lg:col-span-7 bg-white/[0.01] border border-white/5 p-6 rounded-3xl space-y-6">
+          <div className="w-full h-72 sm:h-96 rounded-2xl overflow-hidden relative border border-white/10">
             <img
               src={car.imageUrl}
               alt={car.carName}
@@ -137,8 +119,8 @@ export default function CarDetailsPage({ params: paramsPromise }) {
             <span
               className={`absolute top-4 right-4 text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full backdrop-blur-md ${
                 car.availabilityStatus === "Available"
-                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                  : "bg-rose-500/20 text-rose-400 border border-rose-500/30"
+                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
+                  : "bg-rose-500/20 text-rose-400 border border-rose-500/40"
               }`}
             >
               {car.availabilityStatus}
@@ -187,29 +169,40 @@ export default function CarDetailsPage({ params: paramsPromise }) {
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Interactive Transactional Booking Processing Form */}
-        <div className="lg:col-span-5 bg-white/[0.02] border border-white/10 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-2xl relative overflow-hidden">
-          <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+        {/* ⚡ RIGHT SIDE: EYE-CATCHING NEON ACCENTED BOOKING FORM CONTAINER */}
+        <div className="lg:col-span-5 bg-[#131c2e] border-2 border-primary shadow-[0_0_30px_rgba(59,130,246,0.25)] p-6 sm:p-8 rounded-3xl relative overflow-hidden">
+          {/* Ambient Inner Light Cone glow element */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-2xl pointer-events-none"></div>
 
-          <h2 className="text-2xl font-black mb-1">
-            Book This <span className="text-primary">Vehicle</span>
-          </h2>
-          <p className="text-xs text-gray-400 mb-6">
-            Complete the routing configuration parameters below to execute
-            rental files.
-          </p>
+          <div className="mb-6 relative z-10">
+            <h2 className="text-2xl font-black text-white flex items-center gap-2">
+              🚀 Secure <span className="text-primary">Instant Booking</span>
+            </h2>
+            <p className="text-xs text-gray-400 mt-1">
+              Configure your trip logs to verify rental processing files.
+            </p>
+          </div>
 
-          <form onSubmit={handleBookingSubmit} className="space-y-5">
+          <form
+            onSubmit={handleBookingSubmit}
+            className="space-y-6 relative z-10"
+          >
             <div className="grid grid-cols-2 gap-4">
-              {/* Input: Select Driver Needed option */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+              {/* Selector: Driver Request parameter option element */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-black uppercase tracking-wider text-gray-300">
                   Driver Needed?
                 </label>
                 <select
                   value={driverNeeded}
                   onChange={(e) => setDriverNeeded(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary cursor-pointer"
+                  className="w-full bg-[#1e293b] border-2 border-white/10 rounded-xl px-4 py-3 text-sm text-white font-bold focus:border-primary focus:outline-none transition-all cursor-pointer appearance-none"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "right 1rem center",
+                    backgroundSize: "1em",
+                  }}
                 >
                   <option value="No" className="bg-[#111827]">
                     No (Self Drive)
@@ -220,10 +213,10 @@ export default function CarDetailsPage({ params: paramsPromise }) {
                 </select>
               </div>
 
-              {/* Input: Rental Duration Horizon days counter */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                  Rental Duration
+              {/* Number Input: Trip Rental Time frame counter slider node */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-black uppercase tracking-wider text-gray-300">
+                  Duration (Days)
                 </label>
                 <input
                   type="number"
@@ -234,58 +227,61 @@ export default function CarDetailsPage({ params: paramsPromise }) {
                       Math.max(1, parseInt(e.target.value, 10) || 1),
                     )
                   }
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary"
+                  className="w-full bg-[#1e293b] border-2 border-white/10 rounded-xl px-4 py-3 text-sm text-white font-black text-center focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                   required
                 />
               </div>
             </div>
 
-            {/* Input: Special Instructions Notes free-text box */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+            {/* Custom Description Text Input field area box container */}
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-black uppercase tracking-wider text-gray-300">
                 Special Instructions / Notes
               </label>
               <textarea
-                placeholder="Specify preferred pickup arrival timing adjustments, optional child safety seats extensions, etc..."
+                placeholder="E.g. drop times, car seat configuration adjustments..."
                 value={specialNote}
                 onChange={(e) => setSpecialNote(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary h-24 resize-none leading-relaxed"
+                className="w-full bg-[#1e293b] border-2 border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:border-primary focus:outline-none h-24 resize-none leading-relaxed transition-all"
               ></textarea>
             </div>
 
-            {/* Dynamic Real-time Cost Estimation Dashboard Block display row */}
-            <div className="bg-white/[0.02] border border-white/5 p-4 rounded-xl flex items-center justify-between mt-4">
+            {/* 💰 DYNAMIC EYE-CATCHING COST SUMMARY CARD PANEL CONTAINER */}
+            <div className="bg-gradient-to-r from-primary/20 via-purple-500/10 to-primary/20 border-2 border-primary/30 p-5 rounded-2xl flex items-center justify-between shadow-inner animate-pulse-slow">
               <div>
-                <p className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">
-                  Estimated Aggregates
+                <p className="text-xs uppercase tracking-widest text-primary font-black">
+                  Estimated Billing
                 </p>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  {rentalDays} Day(s) {driverNeeded === "Yes" && "+ Driver"}
+                <p className="text-[11px] text-gray-400 mt-0.5 font-medium">
+                  {rentalDays} Day(s){" "}
+                  {driverNeeded === "Yes" && "• Driver Service Addon"}
                 </p>
               </div>
-              <p className="text-2xl font-black text-white">
-                <span className="text-xs font-normal text-gray-400 mr-1">
-                  Total:
+              <div className="text-right">
+                <span className="text-xs font-bold text-gray-400 block -mb-1">
+                  Amount Due:
                 </span>
-                ${calculateTotalPrice()}
-              </p>
+                <span className="text-3xl font-black tracking-tight text-white drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">
+                  ${calculateTotalPrice()}
+                </span>
+              </div>
             </div>
 
-            {/* Operational Form Trigger Submission Node action element button */}
-            <div className="pt-2">
+            {/* Pulsing Action Gateway Action submission button pipeline node */}
+            <div>
               <button
                 type="submit"
                 disabled={
                   bookingLoading || car.availabilityStatus !== "Available"
                 }
-                className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 text-white font-bold tracking-widest rounded-xl py-3.5 text-xs uppercase transition-all shadow-lg active:scale-[0.99] disabled:opacity-40 disabled:pointer-events-none"
+                className="w-full bg-gradient-to-r from-primary via-blue-600 to-purple-600 hover:from-primary/90 hover:to-purple-600/90 text-white font-black tracking-widest rounded-xl py-4 text-xs uppercase transition-all shadow-xl shadow-primary/30 transform active:scale-[0.99] disabled:opacity-30 disabled:pointer-events-none"
               >
                 {bookingLoading ? (
                   <span className="loading loading-spinner loading-sm"></span>
                 ) : car.availabilityStatus !== "Available" ? (
-                  "Vehicle Unavailable"
+                  "Vehicle Profile Unavailable"
                 ) : (
-                  "Confirm & Book Now"
+                  "⚡ Complete Secure Booking Now"
                 )}
               </button>
             </div>
