@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function ExploreCarsPage() {
   const [cars, setCars] = useState([]);
@@ -43,6 +44,10 @@ export default function ExploreCarsPage() {
 
     return () => clearTimeout(delayDebounceFn);
   }, [search, carType]);
+
+  if (loading) {
+    return <LoadingSpinner message="Querying active fleet entries..." />;
+  }
 
   return (
     <div className="min-h-screen bg-[#0b0f19] bg-gradient-to-br from-[#0b0f19] via-[#111827] to-[#0b0f19] py-12 px-4 sm:px-6 lg:px-8 text-white">
