@@ -198,7 +198,7 @@ export default function SubscriptionPlans() {
           {/* 🔄 Real-time Interactive Frequency Cycle Toggle Switch Slider */}
           <div className="pt-6 flex justify-center items-center gap-3">
             <span
-              className={`text-xs font-bold uppercase tracking-wider transition-colors ${billingCycle === "monthly" ? "text-white" : "text-gray-500"}`}
+              className={`text-xs font-bold uppercase tracking-wider transition-colors ${billingCycle === "monthly" ? "text-base-content" : "text-base-content/40"}`}
             >
               Monthly Cycle
             </span>
@@ -208,7 +208,7 @@ export default function SubscriptionPlans() {
                   prev === "monthly" ? "annual" : "monthly",
                 )
               }
-              className="w-14 h-8 bg-neutral-800 border border-white/10 rounded-full p-1 relative transition-colors focus:outline-none"
+              className="w-14 h-8 bg-base-300 border border-base-content/10 rounded-full p-1 relative transition-colors focus:outline-none"
             >
               <motion.div
                 animate={{ x: billingCycle === "monthly" ? 0 : 24 }}
@@ -217,7 +217,7 @@ export default function SubscriptionPlans() {
               />
             </button>
             <span
-              className={`text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5 ${billingCycle === "annual" ? "text-white" : "text-gray-500"}`}
+              className={`text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5 ${billingCycle === "annual" ? "text-base-content" : "text-base-content/40"}`}
             >
               Annual Contract
               <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-black text-[9px] uppercase px-2 py-0.5 rounded">
@@ -245,8 +245,8 @@ export default function SubscriptionPlans() {
                 whileHover={{ y: -6, transition: { duration: 0.2 } }}
                 className={`cursor-pointer rounded-[2.5rem] border p-8 flex flex-col justify-between relative transition-all duration-300 shadow-2xl text-left ${
                   isSelected
-                    ? "bg-neutral-900/60 border-primary ring-2 ring-primary/20"
-                    : "bg-base-100/20 border-base-content/10 hover:border-base-content/30 backdrop-blur-md"
+                    ? "bg-neutral-900 border-primary ring-2 ring-primary/20 text-white"
+                    : "bg-base-100/50 text-base-content border-base-content/10 hover:border-base-content/30 backdrop-blur-md"
                 }`}
                 style={{
                   boxShadow: isSelected
@@ -258,7 +258,7 @@ export default function SubscriptionPlans() {
                 <div>
                   <div className="flex items-center justify-between mb-6">
                     <div
-                      className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl bg-white/5 border border-white/10 shadow-inner`}
+                      className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl bg-base-content/5 border border-base-content/10 shadow-inner`}
                     >
                       {tier.icon}
                     </div>
@@ -271,23 +271,23 @@ export default function SubscriptionPlans() {
                     )}
                   </div>
 
-                  <h3 className="text-2xl font-black tracking-tight text-white">
+                  <h3 className={`text-2xl font-black tracking-tight ${isSelected ? "text-white" : "text-base-content"}`}>
                     {tier.name}
                   </h3>
-                  <p className="text-[10px] uppercase font-black tracking-widest text-gray-500 mt-1">
+                  <p className={`text-[10px] uppercase font-black tracking-widest mt-1 ${isSelected ? "text-gray-400" : "text-base-content/50"}`}>
                     {tier.tagline}
                   </p>
 
-                  <p className="text-xs text-gray-400 mt-4 leading-relaxed font-medium min-h-[48px]">
+                  <p className={`text-xs mt-4 leading-relaxed font-medium min-h-[48px] ${isSelected ? "text-gray-300" : "text-base-content/70"}`}>
                     {tier.description}
                   </p>
 
                   {/* Pricing Output Parameter Layout display block */}
-                  <div className="my-6 pt-6 border-t border-white/5 flex items-baseline gap-1">
-                    <span className="text-4xl font-black tracking-tighter text-white transition-all duration-300">
+                  <div className={`my-6 pt-6 border-t flex items-baseline gap-1 ${isSelected ? "border-white/10" : "border-base-content/10"}`}>
+                    <span className={`text-4xl font-black tracking-tighter transition-all duration-300 ${isSelected ? "text-white" : "text-base-content"}`}>
                       ${cardPrice}
                     </span>
-                    <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">
+                    <span className={`text-xs font-bold uppercase tracking-wider ${isSelected ? "text-gray-400" : "text-base-content/60"}`}>
                       /{" "}
                       {billingCycle === "monthly"
                         ? "Month"
@@ -300,13 +300,13 @@ export default function SubscriptionPlans() {
                     <p className="text-[10px] font-black uppercase tracking-widest text-primary">
                       Allocation Clearances:
                     </p>
-                    <p className="text-xs text-gray-200 font-bold bg-white/[0.02] border border-white/5 p-3 rounded-xl mb-4 leading-snug">
+                    <p className={`text-xs font-bold p-3 rounded-xl mb-4 leading-snug ${isSelected ? "text-gray-200 bg-white/[0.04] border border-white/10" : "text-base-content/80 bg-base-content/[0.04] border border-base-content/10"}`}>
                       🗂️ {tier.fleetAccess}
                     </p>
                     {tier.features.map((feature, idx) => (
                       <div
                         key={idx}
-                        className="flex items-start gap-2.5 text-xs font-medium text-gray-400"
+                        className={`flex items-start gap-2.5 text-xs font-medium ${isSelected ? "text-gray-300" : "text-base-content/70"}`}
                       >
                         <span className="text-emerald-400 flex-shrink-0 text-sm">
                           ✓
@@ -318,12 +318,12 @@ export default function SubscriptionPlans() {
                 </div>
 
                 {/* Card footer verification check indicator button */}
-                <div className="mt-8 pt-4 border-t border-white/5">
+                <div className={`mt-8 pt-4 border-t ${isSelected ? "border-white/10" : "border-base-content/10"}`}>
                   <button
                     className={`w-full text-xs font-black uppercase tracking-widest rounded-xl py-3.5 transition-all ${
                       isSelected
                         ? `bg-gradient-to-r ${tier.gradient} text-white shadow-lg`
-                        : "bg-white/5 hover:bg-white/10 text-gray-300 border border-white/10"
+                        : "bg-base-content/5 hover:bg-base-content/10 text-base-content/80 border border-base-content/10"
                     }`}
                   >
                     {isSelected
@@ -346,10 +346,10 @@ export default function SubscriptionPlans() {
               <span className="text-[9px] bg-secondary/10 border border-secondary/20 text-secondary font-black px-3 py-1 rounded-md uppercase tracking-widest">
                 Modular Workspace
               </span>
-              <h3 className="text-2xl font-black text-white mt-3 tracking-tight">
+              <h3 className="text-2xl font-black text-base-content mt-3 tracking-tight">
                 Customize Deployment Add-Ons
               </h3>
-              <p className="text-xs text-gray-400 font-medium leading-relaxed mt-2 mb-8">
+              <p className="text-xs text-base-content/60 font-medium leading-relaxed mt-2 mb-8">
                 Incorporate real-time hardware telemetry enhancements or
                 personalized bar configs natively into your monthly rolling
                 profile framework allocation.
@@ -365,18 +365,18 @@ export default function SubscriptionPlans() {
                       className={`p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer flex items-center justify-between gap-4 select-none ${
                         isChecked
                           ? "bg-primary/5 border-primary shadow-inner"
-                          : "bg-white/[0.01] border-white/5 hover:border-white/10 hover:bg-white/[0.03]"
+                          : "bg-base-content/[0.02] border-base-content/10 hover:border-base-content/20 hover:bg-base-content/[0.04]"
                       }`}
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-lg shadow-inner">
+                        <div className="w-10 h-10 rounded-xl bg-base-content/5 flex items-center justify-center text-lg shadow-inner">
                           {addon.icon}
                         </div>
                         <div>
-                          <h4 className="text-xs sm:text-sm font-black text-white">
+                          <h4 className="text-xs sm:text-sm font-black text-base-content">
                             {addon.title}
                           </h4>
-                          <p className="text-[11px] text-gray-500 font-medium mt-0.5 leading-tight">
+                          <p className="text-[11px] text-base-content/50 font-medium mt-0.5 leading-tight">
                             {addon.desc}
                           </p>
                         </div>
@@ -389,7 +389,7 @@ export default function SubscriptionPlans() {
                           className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
                             isChecked
                               ? "bg-primary border-primary text-white"
-                              : "border-white/20 bg-transparent"
+                              : "border-base-content/20 bg-transparent"
                           }`}
                         >
                           {isChecked && (
@@ -403,38 +403,38 @@ export default function SubscriptionPlans() {
               </div>
             </div>
 
-            <div className="pt-6 mt-6 border-t border-white/5 text-[10px] text-gray-500 font-medium">
+            <div className="pt-6 mt-6 border-t border-base-content/10 text-[10px] text-base-content/50 font-medium">
               *Add-ons scale symmetrically across rolling fleet changes and sync
               implicitly on active document updates.
             </div>
           </div>
 
           {/* 💰 RIGHT BLOCK: HIGH VISIBILITY STICKY LIVE COST SUMMARY REAL-TIME CALCULATOR */}
-          <div className="lg:col-span-5 bg-gradient-to-br from-[#121826] to-[#0e1322] border-2 border-primary/30 p-8 sm:p-10 rounded-[2.5rem] shadow-2xl flex flex-col justify-between relative overflow-hidden">
+          <div className="lg:col-span-5 bg-gradient-to-br from-base-200 to-base-300 border-2 border-primary/30 p-8 sm:p-10 rounded-[2.5rem] shadow-2xl flex flex-col justify-between relative overflow-hidden text-base-content">
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
 
             <div>
-              <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest border-b border-white/5 pb-4 mb-6">
+              <h4 className="text-xs font-black text-base-content/60 uppercase tracking-widest border-b border-base-content/10 pb-4 mb-6">
                 Active Allocation Summary Ledger
               </h4>
 
               {/* Cost Line Items Breakdown list parameters */}
-              <div className="space-y-4 text-xs font-medium text-gray-400">
+              <div className="space-y-4 text-xs font-medium text-base-content/70">
                 <div className="flex justify-between">
                   <span>Selected Configuration:</span>
-                  <span className="text-white font-bold">
+                  <span className="text-base-content font-bold">
                     {currentTierData.name}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Contract Terms Cycle:</span>
-                  <span className="text-white font-bold capitalize">
+                  <span className="text-base-content font-bold capitalize">
                     {billingCycle} Cycle
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Base Pricing Ledger:</span>
-                  <span className="text-white font-bold">
+                  <span className="text-base-content font-bold">
                     ${calculatedBasePrice} / mo
                   </span>
                 </div>
@@ -453,7 +453,7 @@ export default function SubscriptionPlans() {
                       return (
                         <span
                           key={id}
-                          className="text-[9px] bg-white/5 border border-white/10 px-2.5 py-0.5 rounded text-gray-300 font-bold uppercase tracking-wider"
+                          className="text-[9px] bg-base-content/5 border border-base-content/10 px-2.5 py-0.5 rounded text-base-content/85 font-bold uppercase tracking-wider"
                         >
                           {ad?.title}
                         </span>
@@ -465,21 +465,21 @@ export default function SubscriptionPlans() {
             </div>
 
             {/* Dynamic Total calculation block visualization display frame */}
-            <div className="pt-8 mt-8 border-t border-white/5 space-y-6">
+            <div className="pt-8 mt-8 border-t border-base-content/10 space-y-6">
               <div className="flex items-baseline justify-between">
                 <div>
-                  <span className="text-[10px] text-gray-400 block uppercase font-black tracking-widest">
+                  <span className="text-[10px] text-base-content/60 block uppercase font-black tracking-widest">
                     Aggregate Contract Rate
                   </span>
-                  <span className="text-xs text-gray-500 font-medium">
+                  <span className="text-xs text-base-content/50 font-medium">
                     All parameters calculated
                   </span>
                 </div>
                 <div className="text-right">
-                  <span className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-primary tracking-tighter">
+                  <span className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-base-content via-base-content to-primary tracking-tighter">
                     ${aggregateTotalCost}
                   </span>
-                  <span className="text-[10px] text-gray-500 block uppercase font-bold tracking-wider mt-0.5">
+                  <span className="text-[10px] text-base-content/50 block uppercase font-bold tracking-wider mt-0.5">
                     / Month
                   </span>
                 </div>
@@ -501,15 +501,15 @@ export default function SubscriptionPlans() {
             ========================================== */}
         <div className="w-full bg-base-100/20 backdrop-blur-md border border-base-content/10 rounded-[2.5rem] p-6 sm:p-10 shadow-xl overflow-hidden text-left">
           <div className="mb-6">
-            <h4 className="text-xs font-black uppercase tracking-widest text-white flex items-center gap-2">
+            <h4 className="text-xs font-black uppercase tracking-widest text-base-content flex items-center gap-2">
               <span>📊</span> Infrastructure Inclusion Comparison Ledger Matrix
             </h4>
           </div>
 
           <div className="overflow-x-auto w-full">
-            <table className="table w-full text-xs font-medium text-gray-300 border-collapse">
+            <table className="table w-full text-xs font-medium text-base-content/75 border-collapse">
               <thead>
-                <tr className="border-b border-white/10 text-gray-400 text-[10px] uppercase tracking-widest font-black">
+                <tr className="border-b border-base-content/10 text-base-content/50 text-[10px] uppercase tracking-widest font-black">
                   <th className="py-4 px-4 bg-transparent text-left">
                     Clearance Target Parameter
                   </th>
@@ -528,18 +528,18 @@ export default function SubscriptionPlans() {
                 {comparisonMatrix.map((row, index) => (
                   <tr
                     key={index}
-                    className="border-b border-white/5 hover:bg-white/[0.01] transition-colors"
+                    className="border-b border-base-content/5 hover:bg-base-content/[0.02] transition-colors"
                   >
-                    <td className="py-4 px-4 text-white font-black text-left">
+                    <td className="py-4 px-4 text-base-content font-black text-left">
                       {row.feature}
                     </td>
-                    <td className="py-4 px-4 text-center text-gray-400">
+                    <td className="py-4 px-4 text-center text-base-content/70">
                       {row.cruiser}
                     </td>
-                    <td className="py-4 px-4 text-center text-gray-200 font-bold bg-primary/5 border-x border-white/5">
+                    <td className="py-4 px-4 text-center text-base-content/85 font-bold bg-primary/5 border-x border-base-content/5">
                       {row.apex}
                     </td>
-                    <td className="py-4 px-4 text-center text-gray-200">
+                    <td className="py-4 px-4 text-center text-base-content/70">
                       {row.syndicate}
                     </td>
                   </tr>
@@ -559,16 +559,16 @@ export default function SubscriptionPlans() {
                 initial={{ opacity: 0, scale: 0.95, y: 15 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 15 }}
-                className="bg-[#111827] border-2 border-primary/30 w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden text-center sm:text-left"
+                className="bg-base-200 border-2 border-primary/30 w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden text-center sm:text-left text-base-content"
               >
                 <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full blur-2xl pointer-events-none"></div>
 
                 <div className="mb-6">
                   <span className="text-3xl mb-1 block">🛡️</span>
-                  <h3 className="text-xl font-black text-white">
+                  <h3 className="text-xl font-black text-base-content">
                     Confirm Subscription Architecture Enrollment
                   </h3>
-                  <p className="text-xs text-gray-400 mt-1 leading-relaxed">
+                  <p className="text-xs text-base-content/60 mt-1 leading-relaxed">
                     You are initializing a cryptographic authorization loop to
                     link your profile account to the{" "}
                     <span className="text-primary font-bold">
@@ -579,10 +579,10 @@ export default function SubscriptionPlans() {
                 </div>
 
                 {/* Pricing metadata breakdown details within validation layout windows */}
-                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 my-4 space-y-2 text-xs leading-relaxed text-gray-300">
+                <div className="bg-base-content/[0.02] border border-base-content/5 rounded-2xl p-4 my-4 space-y-2 text-xs leading-relaxed text-base-content/75">
                   <div className="flex justify-between">
                     <span>Base Tier Rate:</span>
-                    <span className="text-white font-bold">
+                    <span className="text-base-content font-bold">
                       ${calculatedBasePrice} / mo
                     </span>
                   </div>
@@ -592,25 +592,25 @@ export default function SubscriptionPlans() {
                       +${totalAddonsCost} / mo
                     </span>
                   </div>
-                  <div className="flex justify-between pt-2 border-t border-white/5 font-black text-sm">
-                    <span className="text-white">Aggregate Total Charge:</span>
+                  <div className="flex justify-between pt-2 border-t border-base-content/5 font-black text-sm">
+                    <span className="text-base-content">Aggregate Total Charge:</span>
                     <span className="text-primary">
                       ${aggregateTotalCost} / mo
                     </span>
                   </div>
                 </div>
 
-                <div className="text-[11px] text-gray-500 leading-normal bg-black/20 p-3 rounded-xl border border-white/5 mb-6">
+                <div className="text-[11px] text-base-content/60 leading-normal bg-base-content/5 p-3 rounded-xl border border-base-content/5 mb-6">
                   ⚠️ <strong>Terms of Access Authorization:</strong> Membership
                   accounts operate via automated rolling renewals. Cancellations
                   are authorized natively inside your user dashboard anytime.
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/5">
+                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-base-content/5">
                   <button
                     type="button"
                     onClick={() => setCheckoutModal(null)}
-                    className="btn btn-ghost btn-sm rounded-xl normal-case h-11 min-h-0 text-gray-400 hover:bg-white/5 font-medium"
+                    className="btn btn-ghost btn-sm rounded-xl normal-case h-11 min-h-0 text-base-content/60 hover:bg-base-content/5 font-medium"
                   >
                     Abort Settings
                   </button>

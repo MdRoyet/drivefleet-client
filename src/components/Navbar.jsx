@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
@@ -11,6 +11,29 @@ const Navbar = () => {
   const { data: session, isPending } = authClient.useSession();
   const isLoggedIn = !!session;
   const user = session?.user;
+
+  // 🌓 Dark/Day Theme Switcher Logic
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      setTheme(savedTheme);
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    } else {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const defaultTheme = prefersDark ? "dark" : "light";
+      setTheme(defaultTheme);
+      document.documentElement.setAttribute("data-theme", defaultTheme);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
+  };
 
   useEffect(() => {
     const syncCookie = async () => {
@@ -45,7 +68,7 @@ const Navbar = () => {
       }
 
       toast.success("Successfully logged out!");
-      router.push("/login");
+      router.push("/");
       router.refresh();
     } catch (err) {
       toast.error("Logout failed. Please try again.");
@@ -151,6 +174,55 @@ const Navbar = () => {
 
       {/* User Profile OR Login Button */}
       <div className="navbar-end">
+        {/* Dynamic Theme Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          className="btn btn-ghost btn-circle mr-2 hover:bg-base-200/50 transition-all duration-300 relative group overflow-hidden"
+          aria-label="Toggle Theme"
+        >
+          <div className="relative w-6 h-6 flex items-center justify-center">
+            {/* Sun Icon */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.8}
+              stroke="currentColor"
+              className={`w-5.5 h-5.5 text-amber-500 absolute transition-all duration-500 transform ${
+                theme === "dark" 
+                  ? "rotate-90 scale-0 opacity-0" 
+                  : "rotate-0 scale-100 opacity-100"
+              }`}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 3v2.25m0 13.5V21M4.93 4.93l1.591 1.591m10.954 10.954l1.591 1.591M3 12h2.25m13.5 0H21m-2.234-7.07l-1.591 1.591M6.52 17.48l-1.591 1.591M12 7.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9z"
+              />
+            </svg>
+
+            {/* Moon Icon */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.8}
+              stroke="currentColor"
+              className={`w-5.5 h-5.5 text-indigo-400 absolute transition-all duration-500 transform ${
+                theme === "light" 
+                  ? "-rotate-90 scale-0 opacity-0" 
+                  : "-rotate-0 scale-100 opacity-100"
+              }`}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
+              />
+            </svg>
+          </div>
+        </button>
+
         {isPending ? (
           <div className="flex items-center justify-center w-10 h-10">
             <span className="loading loading-spinner loading-md text-primary animate-pulse"></span>

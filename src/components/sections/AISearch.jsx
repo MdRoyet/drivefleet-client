@@ -42,24 +42,24 @@ export default function AISearch() {
   };
 
   return (
-    <section className="bg-transparent py-24 px-4 sm:px-8 border-t border-base-content/10 relative text-white text-left">
+    <section className="bg-transparent py-24 px-4 sm:px-8 border-t border-base-content/10 relative text-base-content text-left">
       <div className="max-w-7xl mx-auto">
         {/* Header Row Content */}
         <div className="text-center md:text-left mb-12 max-w-2xl">
           <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20 inline-block">
             Next-Gen Discovery Network
           </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mt-4">
+          <h2 className="text-3xl sm:text-4xl font-black text-base-content tracking-tight mt-4">
             AI Fleet Concierge Search
           </h2>
-          <p className="text-xs sm:text-sm text-gray-400 mt-2 font-medium">
+          <p className="text-xs sm:text-sm text-base-content/60 mt-2 font-medium">
             Skip manual dropdown filtering entirely. Type your exact travel
             goals, budget parameters, or spacing criteria in natural plain text.
           </p>
         </div>
 
         {/* 🛠️ THE AI TERMINAL INPUT BAR BOX PANEL */}
-        <div className="w-full max-w-4xl bg-neutral-900/40 backdrop-blur-xl border-2 border-white/5 rounded-[2rem] p-6 sm:p-8 shadow-2xl relative mb-12">
+        <div className="w-full max-w-4xl bg-base-200/40 backdrop-blur-xl border border-base-content/10 rounded-[2.5rem] p-6 sm:p-8 shadow-2xl relative mb-12">
           {/* Cyan/Blue ambient corner light flare leak */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none"></div>
 
@@ -77,7 +77,7 @@ export default function AISearch() {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Ask our concierge... (e.g., Show me high-end electric models under 200 dollars)"
-                className="w-full bg-[#111827]/70 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-xs sm:text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all font-medium"
+                className="w-full bg-base-100 border border-base-content/15 rounded-xl pl-12 pr-4 py-4 text-xs sm:text-sm text-base-content placeholder-base-content/40 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all font-medium"
                 disabled={loading}
               />
             </div>
@@ -96,7 +96,7 @@ export default function AISearch() {
 
           {/* Quick-select click suggestion prompt pills row */}
           <div className="mt-5 flex flex-wrap items-center gap-2.5 text-left">
-            <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">
+            <span className="text-[10px] font-black uppercase tracking-widest text-base-content/60">
               Quick Prompts:
             </span>
             {suggestions.map((s, idx) => (
@@ -107,7 +107,7 @@ export default function AISearch() {
                   setPrompt(s);
                   handleAISearchSubmit(null, s);
                 }}
-                className="text-[11px] bg-white/5 hover:bg-primary/10 border border-white/10 hover:border-primary/30 rounded-lg px-3 py-1.5 font-medium transition-all text-gray-300 hover:text-white"
+                className="text-[11px] bg-base-content/5 hover:bg-primary/10 border border-base-content/10 hover:border-primary/30 rounded-lg px-3 py-1.5 font-medium transition-all text-base-content/80 hover:text-primary"
               >
                 "{s}"
               </button>
@@ -126,8 +126,8 @@ export default function AISearch() {
               exit={{ opacity: 0, y: -15 }}
               className="w-full space-y-6"
             >
-              <div className="flex items-center justify-between border-b border-white/5 pb-3">
-                <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 flex items-center gap-2">
+              <div className="flex items-center justify-between border-b border-base-content/10 pb-3">
+                <h3 className="text-xs font-black uppercase tracking-widest text-base-content/60 flex items-center gap-2">
                   <span>🎯</span> Concierge Match Return ({results.length}{" "}
                   Profiles Identified)
                 </h3>
@@ -147,11 +147,11 @@ export default function AISearch() {
 
               {results.length === 0 ? (
                 /* No matching profiles empty boundary case state */
-                <div className="text-center py-16 bg-white/[0.01] border border-dashed border-white/10 rounded-2xl">
-                  <p className="text-md font-bold text-gray-400">
+                <div className="text-center py-16 bg-base-content/[0.02] border border-dashed border-base-content/10 rounded-2xl">
+                  <p className="text-md font-bold text-base-content/70">
                     The AI model couldn't pinpoint matching parameters
                   </p>
-                  <p className="text-xs text-gray-600 mt-1">
+                  <p className="text-xs text-base-content/50 mt-1">
                     Try relaxing terms (e.g., mention broad category names like
                     'SUV' or 'Electric').
                   </p>
@@ -166,9 +166,9 @@ export default function AISearch() {
                         key={car._id}
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="group bg-neutral-900/30 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between hover:border-primary/40 transition-colors"
+                        className="group bg-base-200/40 backdrop-blur-md border border-base-content/10 rounded-2xl overflow-hidden flex flex-col justify-between hover:border-primary/40 transition-colors"
                       >
-                        <div className="w-full h-44 relative bg-white/5 overflow-hidden border-b border-white/5">
+                        <div className="w-full h-44 relative bg-base-content/5 overflow-hidden border-b border-base-content/5">
                           <img
                             src={car.imageUrl}
                             alt={car.carName}
@@ -188,16 +188,16 @@ export default function AISearch() {
                         <div className="p-5 text-left flex-1 flex flex-col justify-between">
                           <div>
                             <div className="flex items-center justify-between gap-2 mb-3">
-                              <h4 className="text-md font-black text-white group-hover:text-primary transition-colors truncate">
+                              <h4 className="text-md font-black text-base-content group-hover:text-primary transition-colors truncate">
                                 {car.carName}
                               </h4>
-                              <span className="text-[9px] bg-white/5 px-2 py-0.5 rounded border border-white/5 text-gray-400 font-bold uppercase">
+                              <span className="text-[9px] bg-base-content/5 px-2 py-0.5 rounded border border-base-content/5 text-base-content/70 font-bold uppercase">
                                 {car.carType}
                               </span>
                             </div>
-                            <div className="flex justify-between items-center text-[11px] text-gray-400 border-y border-white/5 py-2 mb-3">
+                            <div className="flex justify-between items-center text-[11px] text-base-content/60 border-y border-base-content/5 py-2 mb-3">
                               <span>📍 {car.pickupLocation}</span>
-                              <span className="font-bold text-white">
+                              <span className="font-bold text-base-content">
                                 ${car.dailyPrice}/day
                               </span>
                             </div>
@@ -205,7 +205,7 @@ export default function AISearch() {
 
                           <Link
                             href={`/cars/${car._id}`}
-                            className="w-full bg-white/5 hover:bg-primary border border-white/10 hover:border-none text-white text-center font-black text-[10px] uppercase tracking-wider py-2.5 rounded-xl transition-all"
+                            className="w-full bg-base-content/5 hover:bg-primary border border-base-content/10 hover:border-none text-base-content hover:text-white text-center font-black text-[10px] uppercase tracking-wider py-2.5 rounded-xl transition-all"
                           >
                             View Matching Spec Terminal
                           </Link>
